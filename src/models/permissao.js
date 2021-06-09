@@ -1,7 +1,7 @@
 import database, {Sequelize} from '../lib/database/sequelize.js'
 
-let Papel = database.define(
-    "papeis",
+let Permissao = database.define(
+    "permissoes",
     {
       nome: Sequelize.STRING,
       apelido: Sequelize.STRING,
@@ -11,4 +11,4 @@ let Papel = database.define(
     }
 );
 
-export default Papel;
+export default Permissao;
