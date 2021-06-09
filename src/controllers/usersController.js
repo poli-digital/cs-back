@@ -5,6 +5,10 @@ async function insertOne(req, res, next) {
         const user = {
             nome: req.body.nome,
             email: req.body.email,
+            senha: req.body.senha,
+            bloqueado: false,
+            papelId: req.body.papelId,
+            empresaId: req.body.empresaId
         };
 
         let result = await User.create(user);
@@ -24,7 +28,7 @@ async function findAll(req, res, next) {
         if (user.length > 0) {
             res.status(200).json(user);
         } else {
-            res.status(404).json({ message: "User not found!" });
+            res.status(404).json({ message: "Usuário não encontrado!" });
         }
     } catch (e) {
         next(e);
@@ -40,7 +44,7 @@ async function findOne(req, res, next) {
         if (user) {
             res.status(200).json(user);
         } else {
-            res.status(404).json({ message: "User not found!" });
+            res.status(404).json({ message: "Usuário não encontrado!" });
         }
     } catch (e) {
         next(e);
@@ -59,7 +63,7 @@ async function findAllGroup(req, res, next) {
         if (user.length > 0) {
             res.status(200).json(user);
         } else {
-            res.status(404).json({ message: "User not found!" });
+            res.status(404).json({ message: "Usuário não encontrado!" });
         }
     } catch (e) {
         next(e);
@@ -72,6 +76,10 @@ async function updateOne(req, res, next) {
     const newUser = {
         nome: req.body.nome,
         email: req.body.email,
+        senha: req.body.senha,
+        bloqueado: req.body.bloqueado,
+        papelId: req.body.papelId,
+        empresaId: req.body.empresaId
     };
 
     try {
@@ -81,7 +89,7 @@ async function updateOne(req, res, next) {
             newUser.id = user_id;
             res.status(200).json(newUser);
         } else {
-            res.status(404).json({ message: "User not found!" });
+            res.status(404).json({ message: "Usuário não encontrado!" });
         }
     } catch (e) {
         next(e);
@@ -95,9 +103,9 @@ async function destroyOne(req, res, next) {
         let result = await User.destroy({ where: { id: user_id } });
 
         if (result > 0) {
-            res.status(200).json({ message: "User deleted!" });
+            res.status(200).json({ message: "Usuário removido!" });
         } else {
-            res.status(404).json({ message: "User not found!" });
+            res.status(404).json({ message: "Usuário não encontrado!" });
         }
     } catch (e) {
         next(e);
