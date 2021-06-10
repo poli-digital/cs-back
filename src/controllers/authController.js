@@ -22,9 +22,19 @@ async function login(req, res, next) {
             if(!senhaExisteNoBanco){
                 res.status(404).json({ message: "Email inválido ou senha incorreta!" });
             }else{
-                let token = jwt.sign({ id: user.id }, config.TOKEN_SECRET, { expiresIn: '4h' });
+
+                let conteudoDoToken = {
+                    id: user.id,
+                    nome: user.nome,
+                    email: user.email,
+                    bloqueado: user.bloqueado,
+                    papelId: user.papelId,
+                    empresaId: user.empresaId,
+                }
+
+                let token = jwt.sign({ user: conteudoDoToken}, config.TOKEN_SECRET, { expiresIn: '4h' });
                 res.header('token', token);
-                res.status(200).json({ message: "Acesso permitido",token_acesso: token });
+                res.status(200).json({ message: "Logado com sucesso!"});
             }
         }
 
@@ -43,7 +53,8 @@ async function auth(req, res, next) {
         
         try {
             let usuarioVerificado = jwt.verify(token, config.TOKEN_SECRET);
-            req.user = usuarioVerificado;
+            req.user = usuarioVerificado.user;
+            console.log(req.user);
             next();
             
         } catch (e) {
