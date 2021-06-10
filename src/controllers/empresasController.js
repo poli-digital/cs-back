@@ -1,4 +1,3 @@
-import User from '../models/empresa.js'
 import Empresa from '../models/empresa.js'
 
 async function insertOne(req, res, next) {

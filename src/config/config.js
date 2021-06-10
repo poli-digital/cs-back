@@ -6,7 +6,8 @@ const config = {
     DB_DATABASE:'polics',
     DB_USERNAME:'root',
     DB_PASSWORD:'',
-    DB_HOST:'localhost'
+    DB_HOST:'localhost',
+    TOKEN_SECRET:'Este-é-um-segredo-do-polics'
 }
 
 export default config;

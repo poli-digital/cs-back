@@ -1,5 +1,4 @@
 import express from 'express'
-import connection from '../../../lib/database/knex.js'
 import * as empresaController from '../../../controllers/empresasController.js'
 
 const router = express.Router();

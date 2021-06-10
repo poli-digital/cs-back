@@ -1,11 +1,12 @@
 import User from '../models/user.js'
+import bcrypt from 'bcryptjs'
 
 async function insertOne(req, res, next) {
     try {
         const user = {
             nome: req.body.nome,
             email: req.body.email,
-            senha: req.body.senha,
+            senha: bcrypt.hashSync(req.body.senha),
             bloqueado: false,
             papelId: req.body.papelId,
             empresaId: req.body.empresaId
@@ -76,7 +77,6 @@ async function updateOne(req, res, next) {
     const newUser = {
         nome: req.body.nome,
         email: req.body.email,
-        senha: req.body.senha,
         bloqueado: req.body.bloqueado,
         papelId: req.body.papelId,
         empresaId: req.body.empresaId
