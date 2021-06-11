@@ -1,19 +1,18 @@
 import express from 'express'
 import empresaRouter from './routes/empresaRouter.js'
 import usuarioRouter from './routes/usuarioRouter.js'
-import permissaoRouter from './routes/permissaoRouter.js'
 import authRouter from './routes/authRouter.js'
-import buscaPemissoes from '../../controllers/validacaoController.js'
+import {podeCriarUmaEmpresa} from '../../controllers/validacaoController.js'
+import {isAuth} from '../../controllers/authController.js'
 
 const app = express();
 app.use(express.json());
 
-app.use("/empresas", empresaRouter);
-app.use("/usuarios", usuarioRouter);
-app.use("/permissoes", permissaoRouter);
+app.use("/empresas", isAuth, empresaRouter);
+app.use("/usuarios", isAuth, usuarioRouter);
 app.use("/auth", authRouter);
 
-app.get("/teste", buscaPemissoes);
+app.get("/teste", isAuth, podeCriarUmaEmpresa);
 
 app.use((err, req, res, next) => {
     console.log('Algo deu errado nesta requisição! Bad Request ', err)

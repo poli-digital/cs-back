@@ -1,15 +1,11 @@
 import express from 'express'
-import * as authController from '../../../controllers/authController.js'
+import {login} from '../../../controllers/authController.js'
 
 const router = express.Router();
 
 // Fazer login
 router.post("/login", (req, res, next)=>{
-    authController.login(req, res, next);
-});
-
-router.post("/teste", authController.auth, (req, res, next)=>{
-    res.send("teste");
+    login(req, res, next);
 });
 
 export default router;

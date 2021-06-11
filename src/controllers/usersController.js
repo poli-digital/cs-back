@@ -24,7 +24,7 @@ async function insertOne(req, res, next) {
 
 async function findAll(req, res, next) {
     try {
-        let user = await User.findAll();
+        let user = await User.findAll({include: [{ model: Papel, as: 'papel' }, {model: Empresa, as: 'empresa'}]});
 
         if (user.length > 0) {
             res.status(200).json(user);

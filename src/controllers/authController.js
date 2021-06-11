@@ -24,12 +24,7 @@ async function login(req, res, next) {
             }else{
 
                 let conteudoDoToken = {
-                    id: user.id,
-                    nome: user.nome,
-                    email: user.email,
-                    bloqueado: user.bloqueado,
-                    papelId: user.papelId,
-                    empresaId: user.empresaId,
+                    id: user.id
                 }
 
                 let token = jwt.sign({ user: conteudoDoToken}, config.TOKEN_SECRET, { expiresIn: '4h' });
@@ -43,7 +38,7 @@ async function login(req, res, next) {
     }
 }
 
-async function auth(req, res, next) {
+async function isAuth(req, res, next) {
 
     const token = req.header('token');
 
@@ -54,9 +49,7 @@ async function auth(req, res, next) {
         try {
             let usuarioVerificado = jwt.verify(token, config.TOKEN_SECRET);
             req.user = usuarioVerificado.user;
-            console.log(req.user);
             next();
-            
         } catch (e) {
             res.status(401).json({ message: "Acesso negado!" });
         }
@@ -64,4 +57,4 @@ async function auth(req, res, next) {
     }
 }
 
-export { login, auth };
+export { login, isAuth };
