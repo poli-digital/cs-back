@@ -46,6 +46,8 @@ CREATE TABLE papeis_permissoes(
 	FOREIGN KEY (permissao_id) REFERENCES permissoes(id)
 );
 
+-- Superuser (Este é usuário global que o administrador da plataforma tem acesso.
+-- Este usuário tem a possibilidade de criar empresa, editar, excluir etc)
 INSERT into papeis_permissoes(papel_id, permissao_id) VALUES (1,1);
 INSERT into papeis_permissoes(papel_id, permissao_id) VALUES (1,2);
 INSERT into papeis_permissoes(papel_id, permissao_id) VALUES (1,3);
@@ -55,15 +57,24 @@ INSERT into papeis_permissoes(papel_id, permissao_id) VALUES (1,6);
 INSERT into papeis_permissoes(papel_id, permissao_id) VALUES (1,7);
 INSERT into papeis_permissoes(papel_id, permissao_id) VALUES (1,8);
 INSERT into papeis_permissoes(papel_id, permissao_id) VALUES (1,9);
+-- Dono (Owner: Pode exlcuir a empresa e todas as demais funções)
+INSERT into papeis_permissoes(papel_id, permissao_id) VALUES (2,2);
+INSERT into papeis_permissoes(papel_id, permissao_id) VALUES (2,3);
 INSERT into papeis_permissoes(papel_id, permissao_id) VALUES (2,4);
 INSERT into papeis_permissoes(papel_id, permissao_id) VALUES (2,5);
 INSERT into papeis_permissoes(papel_id, permissao_id) VALUES (2,6);
 INSERT into papeis_permissoes(papel_id, permissao_id) VALUES (2,7);
 INSERT into papeis_permissoes(papel_id, permissao_id) VALUES (2,8);
 INSERT into papeis_permissoes(papel_id, permissao_id) VALUES (2,9);
+-- Gerente (Gerente: pode tudo exceto excluir a conta) -- acho que seja excluir empresa
+INSERT into papeis_permissoes(papel_id, permissao_id) VALUES (3,2);
+INSERT into papeis_permissoes(papel_id, permissao_id) VALUES (3,4);
+INSERT into papeis_permissoes(papel_id, permissao_id) VALUES (3,5);
+INSERT into papeis_permissoes(papel_id, permissao_id) VALUES (3,6);
 INSERT into papeis_permissoes(papel_id, permissao_id) VALUES (3,7);
 INSERT into papeis_permissoes(papel_id, permissao_id) VALUES (3,8);
 INSERT into papeis_permissoes(papel_id, permissao_id) VALUES (3,9);
+-- Usuario (Usuário: acesso de leitura (somente ao dashboard - pode modificar dados como adicionar o ID caso o plugin permita))
 
 CREATE TABLE usuarios(
 	id int NOT NULL AUTO_INCREMENT PRIMARY KEY,
