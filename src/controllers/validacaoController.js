@@ -1,4 +1,4 @@
-import papeisPermissoes from "../models/papeisPermissoes.js";
+import {Papel, Permissao} from "../models/index.js";
 
 const validacoes = {
 
@@ -41,10 +41,11 @@ const validacoes = {
 }
 
 async function buscaPemissoes  (req, res, next){
-    //let buscaPemissoes = await papeisPermissoes.findAll({ include: [{model: Papel }] });
-    let buscaPemissoes = await papeisPermissoes.findAll();
+
+    //let buscaPemissoes = await Papel.findByPk(1, {include: Permissao});
+    let buscaPemissoes = await Papel.findByPk(1, {include: Permissao});
     if(buscaPemissoes){
-        res.json({papeis:buscaPemissoes});
+        res.json(buscaPemissoes);
     }else{
         res.json({message:"Falhou"});
     }

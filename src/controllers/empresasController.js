@@ -1,4 +1,4 @@
-import Empresa from '../models/empresa.js'
+import {Empresa} from '../models/index.js'
 
 async function insertOne(req, res, next) {
     try {

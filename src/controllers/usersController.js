@@ -1,4 +1,4 @@
-import User from '../models/user.js'
+import {User, Papel, Empresa} from '../models/index.js'
 import bcrypt from 'bcryptjs'
 
 async function insertOne(req, res, next) {
@@ -40,7 +40,7 @@ async function findOne(req, res, next) {
     const user_id = req.params.id;
 
     try {
-        let user = await User.findByPk(user_id);
+        let user = await User.findByPk(user_id, {include: [{ model: Papel, as: 'papel' }, {model: Empresa, as: 'empresa'}]});
 
         if (user) {
             res.status(200).json(user);
