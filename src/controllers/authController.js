@@ -27,7 +27,8 @@ async function login(req, res, next) {
                     id: user.id
                 }
 
-                let token = jwt.sign({ user: conteudoDoToken}, config.TOKEN_SECRET, { expiresIn: '4h' });
+                //let token = jwt.sign({ user: conteudoDoToken}, config.TOKEN_SECRET, { expiresIn: '4h' });
+                let token = jwt.sign({ user: conteudoDoToken}, config.TOKEN_SECRET);
                 res.header('token', token);
                 res.status(200).json({ message: "Logado com sucesso!"});
             }
@@ -43,7 +44,7 @@ async function isAuth(req, res, next) {
     const token = req.header('token');
 
     if(!token){
-        res.status(401).json({ message: "Acesso negado!" });
+        res.status(401).json({ message: "Acesso negado! Você pressica fornecer o token!" });
     }else{
         
         try {
@@ -51,7 +52,7 @@ async function isAuth(req, res, next) {
             req.user = usuarioVerificado.user;
             next();
         } catch (e) {
-            res.status(401).json({ message: "Acesso negado!" });
+            res.status(401).json({ message: "Acesso negado! O seu token expirou ou esta inválido!" });
         }
 
     }

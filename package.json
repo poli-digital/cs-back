@@ -4,7 +4,7 @@
   "description": "Backend do polics",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
     "start": "nodemon src/app.js"
   },
   "author": "Douglas de Freitas Amorim",
@@ -20,6 +20,7 @@
   },
   "devDependencies": {
     "babel-register": "^6.26.0",
+    "jest": "^27.0.4",
     "sequelize-cli": "^6.2.0"
   }
 }

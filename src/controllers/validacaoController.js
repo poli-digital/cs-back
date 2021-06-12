@@ -1,15 +1,15 @@
-import {Papel, Permissao, User} from "../models/index.js";
+import {Papel, Permissao, User, Empresa} from "../models/index.js";
 
 function podeCriarUmaEmpresa(req, res, next) {
     verificaPermissao(req, res, next, 'criar_empresa');
 }
 
 function podeEditarUmaEmpresa(req, res, next) {
-    verificaPermissao(req, res, next, 'editar_empresa');
+    verificaPermissao(req, res, next, 'editar_empresa', usuarioQuerManipularSuaPropriaEmpresa);
 }
 
 function podeRemoverUmaEmpresa(req, res, next) {
-    verificaPermissao(req, res, next, 'excluir_empresa');
+    verificaPermissao(req, res, next, 'excluir_empresa', usuarioQuerManipularSuaPropriaEmpresa);
 }
 
 function podeCriarUmUsuario(req, res, next) {
@@ -17,11 +17,11 @@ function podeCriarUmUsuario(req, res, next) {
 }
 
 function podeEditarUmUsuario(req, res, next) {
-    verificaPermissao(req, res, next, 'editar_usuario');
+    verificaPermissao(req, res, next, 'editar_usuario', usuarioQuerManipularUsuariosDeSuaPropriaEmpresa);
 }
 
 function podeRemoverUmUsuario(req, res, next) {
-    verificaPermissao(req, res, next, 'excluir_usuario');
+    verificaPermissao(req, res, next, 'excluir_usuario', usuarioQuerManipularUsuariosDeSuaPropriaEmpresa);
 }
 
 function podeCriarUmPlugin(req, res, next) {
@@ -35,37 +35,41 @@ function podeRemoverUmPlugin(req, res, next) {
     verificaPermissao(req, res, next, 'excluir_plugin');
 }
 
-async function verificaPermissao(req, res, next, permissaoNecessariaParaAcessarARota){
-    
-    const messagemPadrao = 'Você não tem permissão para acessar esta rota!';
-    const mensagemPadrao2 = 'Você não tem permissão para acessar esta rota com este papel!'
-    
+async function verificaPermissao(req, res, next, perm, funcaoValidaUsuario = ()=>{return true}){
+    let permissaoNecessariaParaAcessarARota = perm;
     const userId = req.user.id;
-    console.log('userId', userId)
+
     if(!userId){
-        res.status(401).json({message:messagemPadrao});
+        res.status(401).json({message:'Não foi possível identificar o usuário logado!'});
     }else{
 
         try{
 
-            let user = await User.findByPk(userId, {include: [{ model: Papel, as: 'papel' }]});
+            let user = await User.findByPk(userId, {include: [{ model: Papel, as: 'papel' }, {model: Empresa, as: 'empresa'}]});
             let papelQueEstaTentandoAcessarARota = user.papel;
 
             if(!permissaoNecessariaParaAcessarARota || !papelQueEstaTentandoAcessarARota){
-                res.status(401).json({message:messagemPadrao});
+                res.status(401).json({message:'Permissão de acesso a rota ou papel de acesso não foi encontrado!'});
             }else{
                 let isRotaPermitida = await papelTemPermissaoParaAcessarARota(permissaoNecessariaParaAcessarARota, papelQueEstaTentandoAcessarARota);
                 if(isRotaPermitida){
-                    next();
-                    //res.status(200).json({message:"Permissão concedida"});
+
+                    let isValidoAcaoUsuario = await funcaoValidaUsuario(req, res, next, user);
+
+                    if(isValidoAcaoUsuario){
+                        next();
+                    }else{
+                        res.status(401).json({message:'Você não tem acesso para aplicar esta ação nesta empresa!'});
+                    }
+
                 }else{
-                    res.status(401).json({message:mensagemPadrao2});
+                    res.status(401).json({message:'Você não tem permissão para acessar esta rota com este papel!'});
                 }
             }
 
         }catch(e){
             console.log(e);
-            res.status(401).json({message:messagemPadrao});
+            res.status(401).json({message:'Você não tem permissão para acessar esta rota! Algo de errado aconteceu.'});
         }
     }
 }
@@ -101,8 +105,13 @@ async function usuarioQuerManipularUsuariosDeSuaPropriaEmpresa(req, res, next, u
     const empresaDoUsuarioAutenticado = user.empresa.id;
     const userId = req.params.id;
     let usuarioQueSeraManipulado = await User.findByPk(userId, {include: [{model: Empresa, as: 'empresa'}]});
-    let empresaDoUsuarioQueSeraManipulado = usuarioQueSeraManipulado.empresa.id;
-    return (empresaDoUsuarioAutenticado == empresaDoUsuarioQueSeraManipulado);    
+    if(usuarioQueSeraManipulado){
+        let empresaDoUsuarioQueSeraManipulado = usuarioQueSeraManipulado.empresa.id;
+        return (empresaDoUsuarioAutenticado == empresaDoUsuarioQueSeraManipulado);
+    }else{
+        return false;
+    }
+        
 }
 
 async function usuarioQuerManipularPluginsDeSuaPropriaEmpresa(req, res, next, user) {
@@ -113,7 +122,42 @@ async function usuarioQuerManipularPluginsDeSuaPropriaEmpresa(req, res, next, us
     return (empresaDoUsuarioAutenticado == empresaDoPluginQueSeraManipulado);
 }
 
+// O usuário só pode manipular a sua própria empresa.
+async function permissaoParaEditarUmaEmpresa(idEmpresaParams, funcaoQueBuscaOUsuarioAutenticado) {
+    const usuarioAutenticado = await funcaoQueBuscaOUsuarioAutenticado();
+    if(usuarioAutenticado){
+        const idDaEmpresaDoUsuarioAutenticado = usuarioAutenticado.empresa.id;
+        const idDaEmpresaQueDesejaManipular = idEmpresaParams;
+        return (idDaEmpresaDoUsuarioAutenticado == idDaEmpresaQueDesejaManipular);
+    }else{
+        return false;
+    }
+}
+
+// O usuário só pode manipular um usuário que pertence a sua própria empresa.
+async function permissaoParaEditarUmUsuario(funcaoQueBuscaOUsuarioAutenticado, funcaoQueBuscaOUsuarioQueSeraManipulado) {
+    const usuarioAutenticado = await funcaoQueBuscaOUsuarioAutenticado();
+    const usuarioQueSeraManipulado = await funcaoQueBuscaOUsuarioQueSeraManipulado();
+    if(usuarioAutenticado && usuarioQueSeraManipulado){
+        const idDaEmpresaDoUsuarioAutenticado = usuarioAutenticado.empresa.id;
+        const idDaEmpresaDoUsuarioQueSeraManipulado = usuarioQueSeraManipulado.empresa.id;
+        return (idDaEmpresaDoUsuarioAutenticado == idDaEmpresaDoUsuarioQueSeraManipulado);
+    }else{
+        return false;
+    }
+}
+
+const retornaUmUsuario = async (id)=>{
+    try{
+        return await User.findByPk(id, {include: [{ model: Papel, as: 'papel' }, {model: Empresa, as: 'empresa'}]});
+    }catch(e){
+        console.log('Erro ao retornar usuário', e);
+        return null;
+    }
+}
+
 export {podeCriarUmaEmpresa, podeEditarUmaEmpresa, podeRemoverUmaEmpresa,
     podeCriarUmUsuario, podeEditarUmUsuario, podeRemoverUmUsuario, 
-    podeCriarUmPlugin, podeEditarUmPlugin, podeRemoverUmPlugin
+    podeCriarUmPlugin, podeEditarUmPlugin, podeRemoverUmPlugin,
+    permissaoParaEditarUmaEmpresa, permissaoParaEditarUmUsuario
 };
