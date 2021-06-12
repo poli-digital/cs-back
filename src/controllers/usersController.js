@@ -8,11 +8,11 @@ async function insertOne(req, res, next) {
             email: req.body.email,
             senha: bcrypt.hashSync(req.body.senha),
             bloqueado: false,
-            papelId: req.body.papelId,
-            empresaId: req.body.empresaId
+            papel_id: req.body.idPapel,
+            empresa_id: req.body.IdEmpresa
         };
 
-        let result = await User.create(user);
+        let result = await User.create(user, {include: [{ model: Papel, as: 'papel' }]});
 
         user.id = result.id;
 
@@ -78,12 +78,12 @@ async function updateOne(req, res, next) {
         nome: req.body.nome,
         email: req.body.email,
         bloqueado: req.body.bloqueado,
-        papelId: req.body.papelId,
-        empresaId: req.body.empresaId
+        papel_id: req.body.idPapel,
+        empresa_id: req.body.IdEmpresa
     };
 
     try {
-        let result = await User.update(newUser, { where: { id: user_id } });
+        let result = await User.update(newUser, { where: { id: user_id }, include: [{ model: Papel, as: 'papel' }] });
 
         if (result > 0) {
             newUser.id = user_id;

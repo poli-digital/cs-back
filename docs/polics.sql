@@ -91,7 +91,7 @@ CREATE TABLE usuarios(
 );
 
 INSERT into usuarios(nome, email, senha, bloqueado, papel_id, empresa_id) 
-VALUES ('Administrador Geral', 'admin@polics.com.br', '123456', false, 1, 1);
+VALUES ('Administrador Geral', 'admin@polics.com.br', '$2a$10$IQ/.8NG5Np0OaLFVOVGjP.RZDXwBe5yENT4BfFy0CWw7t5Icj0UMC', false, 1, 1);
 
 
 CREATE TABLE plugins(

@@ -56,8 +56,8 @@ async function verificaPermissao(req, res, next, permissaoNecessariaParaAcessarA
             }else{
                 let permissoesDoPapel = await papelTemPermissaoParaAcessarARota(permissaoNecessariaParaAcessarARota, papelQueEstaTentandoAcessarARota);
                 if(permissoesDoPapel){
-                    //next();
-                    res.status(200).json({message:"Permissão concedida"});
+                    next();
+                    //res.status(200).json({message:"Permissão concedida"});
                 }else{
                     res.status(401).json({message:mensagemPadrao2});
                 }
