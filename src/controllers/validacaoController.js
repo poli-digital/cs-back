@@ -54,8 +54,8 @@ async function verificaPermissao(req, res, next, permissaoNecessariaParaAcessarA
             if(!permissaoNecessariaParaAcessarARota || !papelQueEstaTentandoAcessarARota){
                 res.status(401).json({message:messagemPadrao});
             }else{
-                let permissoesDoPapel = await papelTemPermissaoParaAcessarARota(permissaoNecessariaParaAcessarARota, papelQueEstaTentandoAcessarARota);
-                if(permissoesDoPapel){
+                let isRotaPermitida = await papelTemPermissaoParaAcessarARota(permissaoNecessariaParaAcessarARota, papelQueEstaTentandoAcessarARota);
+                if(isRotaPermitida){
                     next();
                     //res.status(200).json({message:"Permissão concedida"});
                 }else{
@@ -89,6 +89,28 @@ async function papelTemPermissaoParaAcessarARota  (permissaoNecessariaParaAcessa
         console.log(e);
         return false;
     } 
+}
+
+function usuarioQuerManipularSuaPropriaEmpresa(req, res, next, user) {
+    const empresaDoUsuarioAutenticado = user.empresa.id; // Usuario que fez a requisição = autenticado
+    const empresaQueDesejaManipular = req.params.id;
+    return (empresaDoUsuarioAutenticado == empresaQueDesejaManipular);
+}
+
+async function usuarioQuerManipularUsuariosDeSuaPropriaEmpresa(req, res, next, user) {
+    const empresaDoUsuarioAutenticado = user.empresa.id;
+    const userId = req.params.id;
+    let usuarioQueSeraManipulado = await User.findByPk(userId, {include: [{model: Empresa, as: 'empresa'}]});
+    let empresaDoUsuarioQueSeraManipulado = usuarioQueSeraManipulado.empresa.id;
+    return (empresaDoUsuarioAutenticado == empresaDoUsuarioQueSeraManipulado);    
+}
+
+async function usuarioQuerManipularPluginsDeSuaPropriaEmpresa(req, res, next, user) {
+    const empresaDoUsuarioAutenticado = user.empresa.id;
+    const pluginId = req.params.id;
+    let pluginQueSeraManipulado = 'IMPLEMENTAR' //TODO implementar
+    let empresaDoPluginQueSeraManipulado = pluginQueSeraManipulado.empresa.id;
+    return (empresaDoUsuarioAutenticado == empresaDoPluginQueSeraManipulado);
 }
 
 export {podeCriarUmaEmpresa, podeEditarUmaEmpresa, podeRemoverUmaEmpresa,
