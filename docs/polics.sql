@@ -110,19 +110,53 @@ INSERT into plugins(nome, titulo, descricao) VALUES ('Polichat', 'Polichat', 'Es
 INSERT into plugins(nome, titulo, descricao) VALUES ('Superlógica', 'Superlógica', 'Pagamentos');
 INSERT into plugins(nome, titulo, descricao) VALUES ('Datawarehouse', 'Datawarehouse', 'Banco pessoal');
 
-CREATE TABLE tokens(
+CREATE TABLE configuracao_plugin_pipe(
 	id int NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    empresa_id int NOT NULL,
-    id_plugin int NOT NULL,
+	empresa_id int NOT NULL,
+	plugin_id int NOT NULL,
 	FOREIGN KEY (empresa_id) REFERENCES empresas(id),
-	FOREIGN KEY (id_plugin) REFERENCES plugins(id),
-	primeiro_token TEXT NOT NULL,
-	segundo_token TEXT
+	FOREIGN KEY (plugin_id) REFERENCES plugins(id),
+	token TEXT NOT NULL,
+	visivel BOOLEAN NOT NULL,
+	titulo varchar(255) NOT NULL,
+	use_acordeon BOOLEAN NOT NULL,
+	campo_id BOOLEAN NOT NULL,
+	campo_atividade BOOLEAN NOT NULL,
+	campo_titulo BOOLEAN NOT NULL,
+	campo_notas BOOLEAN NOT NULL,
+	campo_criacao BOOLEAN NOT NULL,
+	campo_dono BOOLEAN NOT NULL,
+	campo_etapa BOOLEAN NOT NULL,
+	campo_funil BOOLEAN NOT NULL,
+	campo_status BOOLEAN NOT NULL
 );
 
-INSERT into tokens(empresa_id, id_plugin, primeiro_token) VALUES (1, 1, 'OWFlN');
-INSERT into tokens(empresa_id, id_plugin, primeiro_token) VALUES (1, 2, 'R1l6W');
-INSERT into tokens(empresa_id, id_plugin, primeiro_token, segundo_token) VALUES (1, 3, 'Zq5b', 'tf8nfi');
+INSERT into configuracao_plugin_pipe(
+	empresa_id, plugin_id, token, visivel, titulo, use_acordeon, campo_id, campo_atividade, campo_titulo,
+	campo_notas, campo_criacao, campo_dono, campo_etapa, campo_funil, campo_status
+) VALUES (1, 1, 'ttt', true, 'Atividades', true, true, true, true, true, true, true, true, true, true);
+
+CREATE TABLE configuracao_plugin_poli(
+	id int NOT NULL AUTO_INCREMENT PRIMARY KEY,
+	empresa_id int NOT NULL,
+	plugin_id int NOT NULL,
+	FOREIGN KEY (empresa_id) REFERENCES empresas(id),
+	FOREIGN KEY (plugin_id) REFERENCES plugins(id),
+	token TEXT NOT NULL,
+	visivel BOOLEAN NOT NULL,
+	titulo varchar(255) NOT NULL,
+	campo_id BOOLEAN NOT NULL,
+	campo_id_contato BOOLEAN NOT NULL,
+	campo_nome BOOLEAN NOT NULL,
+	campo_numero BOOLEAN NOT NULL,
+	campo_empresa BOOLEAN NOT NULL,
+	campo_conversa BOOLEAN NOT NULL
+);
+
+INSERT into configuracao_plugin_poli(
+	empresa_id, plugin_id, token, visivel, titulo, campo_id, campo_id_contato, campo_nome,
+	campo_numero, campo_empresa, campo_conversa
+) VALUES (1, 2, 'aaa', true, 'Contatos', true, true, true, true, true, true );
 
 
 
@@ -133,6 +167,7 @@ DROP TABLE usuarios;
 DROP TABLE papeis_permissoes;
 DROP TABLE papeis;
 DROP TABLE permissoes;
-DROP TABLE tokens;
+DROP TABLE configuracao_plugin_pipe;
+DROP TABLE configuracao_plugin_poli;
 DROP TABLE plugins;
 DROP TABLE empresas;
