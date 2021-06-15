@@ -110,52 +110,56 @@ INSERT into plugins(nome, titulo, descricao) VALUES ('Polichat', 'Polichat', 'Es
 INSERT into plugins(nome, titulo, descricao) VALUES ('Superlógica', 'Superlógica', 'Pagamentos');
 INSERT into plugins(nome, titulo, descricao) VALUES ('Datawarehouse', 'Datawarehouse', 'Banco pessoal');
 
-CREATE TABLE configuracao_plugin_pipe(
+CREATE TABLE config_plugin_pipe(
 	id int NOT NULL AUTO_INCREMENT PRIMARY KEY,
-	empresa_id int NOT NULL,
+	company_id int NOT NULL,
 	plugin_id int NOT NULL,
-	FOREIGN KEY (empresa_id) REFERENCES empresas(id),
+	FOREIGN KEY (company_id) REFERENCES empresas(id),
 	FOREIGN KEY (plugin_id) REFERENCES plugins(id),
 	token TEXT NOT NULL,
-	visivel BOOLEAN NOT NULL,
-	titulo varchar(255) NOT NULL,
-	use_acordeon BOOLEAN NOT NULL,
-	campo_id BOOLEAN NOT NULL,
-	campo_atividade BOOLEAN NOT NULL,
-	campo_titulo BOOLEAN NOT NULL,
-	campo_notas BOOLEAN NOT NULL,
-	campo_criacao BOOLEAN NOT NULL,
-	campo_dono BOOLEAN NOT NULL,
-	campo_etapa BOOLEAN NOT NULL,
-	campo_funil BOOLEAN NOT NULL,
-	campo_status BOOLEAN NOT NULL
+	visible BOOLEAN NOT NULL,
+	title varchar(255) NOT NULL,
+	use_accordion BOOLEAN NOT NULL,
+	field_id BOOLEAN NOT NULL,
+	field_activity BOOLEAN NOT NULL,
+	field_title BOOLEAN NOT NULL,
+	field_notes BOOLEAN NOT NULL,
+	field_creation BOOLEAN NOT NULL,
+	field_owner BOOLEAN NOT NULL,
+	field_stage BOOLEAN NOT NULL,
+	field_funnel BOOLEAN NOT NULL,
+	field_status BOOLEAN NOT NULL,
+	created_at DATETIME,
+	updated_at DATETIME
 );
 
-INSERT into configuracao_plugin_pipe(
-	empresa_id, plugin_id, token, visivel, titulo, use_acordeon, campo_id, campo_atividade, campo_titulo,
-	campo_notas, campo_criacao, campo_dono, campo_etapa, campo_funil, campo_status
+INSERT into config_plugin_pipe(
+	company_id, plugin_id, token, visible, title, use_accordion, field_id, field_activity, field_title,
+	field_notes, field_creation, field_owner, field_stage, field_funnel, field_status
 ) VALUES (1, 1, 'ttt', true, 'Atividades', true, true, true, true, true, true, true, true, true, true);
 
-CREATE TABLE configuracao_plugin_poli(
+CREATE TABLE config_plugin_poli(
 	id int NOT NULL AUTO_INCREMENT PRIMARY KEY,
-	empresa_id int NOT NULL,
+	company_id int NOT NULL,
 	plugin_id int NOT NULL,
-	FOREIGN KEY (empresa_id) REFERENCES empresas(id),
+	FOREIGN KEY (company_id) REFERENCES empresas(id),
 	FOREIGN KEY (plugin_id) REFERENCES plugins(id),
 	token TEXT NOT NULL,
-	visivel BOOLEAN NOT NULL,
-	titulo varchar(255) NOT NULL,
-	campo_id BOOLEAN NOT NULL,
-	campo_id_contato BOOLEAN NOT NULL,
-	campo_nome BOOLEAN NOT NULL,
-	campo_numero BOOLEAN NOT NULL,
-	campo_empresa BOOLEAN NOT NULL,
-	campo_conversa BOOLEAN NOT NULL
+	visible BOOLEAN NOT NULL,
+	title varchar(255) NOT NULL,
+	field_id BOOLEAN NOT NULL,
+	field_id_contact BOOLEAN NOT NULL,
+	field_name BOOLEAN NOT NULL,
+	field_number BOOLEAN NOT NULL,
+	field_company BOOLEAN NOT NULL,
+	field_talk BOOLEAN NOT NULL,
+	created_at DATETIME,
+	updated_at DATETIME
 );
 
-INSERT into configuracao_plugin_poli(
-	empresa_id, plugin_id, token, visivel, titulo, campo_id, campo_id_contato, campo_nome,
-	campo_numero, campo_empresa, campo_conversa
+INSERT into config_plugin_poli(
+	company_id, plugin_id, token, visible, title, field_id, field_id_contact, field_name,
+	field_number, field_company, field_talk
 ) VALUES (1, 2, 'aaa', true, 'Contatos', true, true, true, true, true, true );
 
 
@@ -167,7 +171,7 @@ DROP TABLE usuarios;
 DROP TABLE papeis_permissoes;
 DROP TABLE papeis;
 DROP TABLE permissoes;
-DROP TABLE configuracao_plugin_pipe;
-DROP TABLE configuracao_plugin_poli;
+DROP TABLE config_plugin_pipe;
+DROP TABLE config_plugin_poli;
 DROP TABLE plugins;
 DROP TABLE empresas;

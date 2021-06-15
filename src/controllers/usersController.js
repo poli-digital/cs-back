@@ -12,7 +12,7 @@ async function insertOne(req, res, next) {
             empresa_id: req.body.IdEmpresa
         };
 
-        let result = await User.create(user, {include: [{ model: Papel, as: 'papel' }]});
+        let result = await User.create(user);
 
         user.id = result.id;
 
