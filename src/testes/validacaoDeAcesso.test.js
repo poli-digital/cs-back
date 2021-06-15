@@ -1,6 +1,11 @@
-import {permissaoParaManipularUmaEmpresa, permissaoParaManipularUmUsuario, papelTemPermissaoParaAcessarARota} from '../controllers/validacaoController.js'
+import {
+    permissaoParaManipularUmaEmpresa, 
+    permissaoParaManipularUmUsuario, 
+    papelTemPermissaoParaAcessarARota,
+    permissionToManipulateTheConfigurationOfAPlugin } from '../controllers/validacaoController.js'
 
-// ------------------------------------ VALIDAÇÃO DE ACESSO A ROTAS ------------------------------------
+
+// ------------------------------------ VALIDATE ACCESS ROUTES ------------------------------------
 
 test('Super user tem acesso a rota para adicionar uma nova empresa?', () => {
     let isRotaPermitida = papelTemPermissaoParaAcessarARota('criar_empresa', permissoesDoSuperUser)
@@ -239,6 +244,44 @@ test('Manager pode modificar um usuário de uma outra empresa?', () => {
     expect(podeModificarUmaEmpresa).not.toBeTruthy();
 });
 
+// ------------------------------------ MANIPULATE CONFIG PLUGIN  ------------------------------------
+
+test('Super user pode modificar uma configuração de plugin de sua propria empresa?', () => {
+    let canModifyACompany = permissionToManipulateTheConfigurationOfAPlugin(usuarioAutenticado_id1_empresa1_superuser, configurationOfPluginThatWillBeManipulated_id1_company1)
+    expect(canModifyACompany).toBeTruthy();
+    expect(canModifyACompany).not.toBeFalsy();
+});
+
+test('Super user pode modificar uma configuração de plugin de uma outra empresa?', () => {
+    let canModifyACompany = permissionToManipulateTheConfigurationOfAPlugin(usuarioAutenticado_id1_empresa1_superuser, configurationOfPluginThatWillBeManipulated_id2_company2)
+    expect(canModifyACompany).toBeTruthy();
+    expect(canModifyACompany).not.toBeFalsy();
+});
+
+test('Owner pode modificar uma configuração de plugin de sua propria empresa?', () => {
+    let canModifyACompany = permissionToManipulateTheConfigurationOfAPlugin(usuarioAutenticado_id1_empresa1_owner, configurationOfPluginThatWillBeManipulated_id1_company1)
+    expect(canModifyACompany).toBeTruthy();
+    expect(canModifyACompany).not.toBeFalsy();
+});
+
+test('Owner pode modificar uma configuração de plugin de uma outra empresa?', () => {
+    let canModifyACompany = permissionToManipulateTheConfigurationOfAPlugin(usuarioAutenticado_id1_empresa1_owner, configurationOfPluginThatWillBeManipulated_id2_company2)
+    expect(canModifyACompany).toBeFalsy();
+    expect(canModifyACompany).not.toBeTruthy();
+});
+
+test('Manager pode modificar uma configuração de plugin de sua propria empresa?', () => {
+    let canModifyACompany = permissionToManipulateTheConfigurationOfAPlugin(usuarioAutenticado_id1_empresa1_manager, configurationOfPluginThatWillBeManipulated_id1_company1)
+    expect(canModifyACompany).toBeTruthy();
+    expect(canModifyACompany).not.toBeFalsy();
+});
+
+test('Manager pode modificar uma configuração de plugin de uma outra empresa?', () => {
+    let canModifyACompany = permissionToManipulateTheConfigurationOfAPlugin(usuarioAutenticado_id1_empresa1_manager, configurationOfPluginThatWillBeManipulated_id2_company2)
+    expect(canModifyACompany).toBeFalsy();
+    expect(canModifyACompany).not.toBeTruthy();
+});
+
 // ------------------------------------ FUNÇÕES DE AUXILIO ------------------------------------
 
 const usuarioAutenticado_id1_empresa1_superuser = {
@@ -327,3 +370,12 @@ const permissoesDoManager = [
 
 const permissoesDoUser = [];
 
+const configurationOfPluginThatWillBeManipulated_id1_company1= {
+    "id": 1,
+    "company_id":1
+}
+
+const configurationOfPluginThatWillBeManipulated_id2_company2 = {
+    "id": 2,
+    "company_id":2
+}

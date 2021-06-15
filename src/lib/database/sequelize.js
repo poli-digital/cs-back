@@ -10,7 +10,7 @@ const database = new Sequelize(
     host: config.DB_HOST,
     dialect: config.DB_CONNECTION,
 
-    logging: true
+    logging: false
   },
 );
 

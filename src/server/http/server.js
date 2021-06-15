@@ -5,8 +5,7 @@ import authRouter from './routes/authRouter.js'
 import {podeCriarUmaEmpresa} from '../../controllers/validacaoController.js'
 import {isAuth} from '../../controllers/authController.js'
 import pluginRouter from './routes/pluginRouter.js'
-import configPluginPipeRouter from './routes/configPluginPipeRouter.js'
-import configPluginPoliRouter from './routes/configPluginPoliRouter.js'
+import configPluginsRouter from './routes/configPluginRouter.js'
 
 const app = express();
 app.use(express.json());
@@ -16,8 +15,7 @@ app.use("/auth", authRouter);
 app.use("/empresas", isAuth, empresaRouter);
 app.use("/usuarios", isAuth, usuarioRouter);
 app.use("/plugins", pluginRouter);
-app.use('/configPluginsPipe', configPluginPipeRouter);
-app.use('/configPluginsPoli', configPluginPoliRouter);
+app.use('/configPlugins', isAuth, configPluginsRouter);
 
 app.get("/teste", isAuth, podeCriarUmaEmpresa);
 

@@ -1,8 +1,8 @@
-import {ConfigPluginPipe, Empresa, Plugin} from '../models/index.js'
+import {ConfigPlugins, Empresa, Plugin} from '../models/index.js'
 
 async function findAll(req, res, next) {
     try {
-        let configPlugins = await ConfigPluginPipe.findAll({include: [{ model: Empresa, as: 'config_plugin_pipe_company' }, {model: Plugin, as: 'config_plugin_pipe_plugin'}]});
+        let configPlugins = await ConfigPlugins.findAll({include: [{ model: Empresa, as: 'config_plugins_company' }, {model: Plugin, as: 'config_plugins_plugin'}]});
 
         if (configPlugins.length > 0) {
             res.status(200).json(configPlugins);
@@ -30,11 +30,16 @@ async function insertOne(req, res, next) {
             field_stage: req.body.field_stage,
             field_funnel: req.body.field_funnel,
             field_status: req.body.field_status,
+            field_id_contact: req.body.field_id_contact,
+            field_name: req.body.field_name,
+            field_number: req.body.field_number,
+            field_company: req.body.field_company,
+            field_talk: req.body.field_talk,
             company_id: req.body.company_id,
             plugin_id: req.body.plugin_id
         };
 
-        let result = await ConfigPluginPipe.create(configPlugin);
+        let result = await ConfigPlugins.create(configPlugin);
 
         configPlugin.id = result.id;
 
@@ -48,7 +53,7 @@ async function findOne(req, res, next) {
     const configPlugin_id = req.params.id;
 
     try {
-        let configPlugin = await ConfigPluginPipe.findByPk(configPlugin_id, {include: [{ model: Empresa, as: 'config_plugin_pipe_company' }, {model: Plugin, as: 'config_plugin_pipe_plugin'}]});
+        let configPlugin = await ConfigPlugins.findByPk(configPlugin_id, {include: [{ model: Empresa, as: 'config_plugins_company' }, {model: Plugin, as: 'config_plugins_plugin'}]});
 
         if (configPlugin) {
             res.status(200).json(configPlugin);
@@ -77,12 +82,17 @@ async function updateOne(req, res, next) {
         field_stage: req.body.field_stage,
         field_funnel: req.body.field_funnel,
         field_status: req.body.field_status,
+        field_id_contact: req.body.field_id_contact,
+        field_name: req.body.field_name,
+        field_number: req.body.field_number,
+        field_company: req.body.field_company,
+        field_talk: req.body.field_talk,
         company_id: req.body.company_id,
         plugin_id: req.body.plugin_id
     };
 
     try {
-        let result = await ConfigPluginPipe.update(newConfigPlugin, { where: { id: configPlugin_id }});
+        let result = await ConfigPlugins.update(newConfigPlugin, { where: { id: configPlugin_id }});
 
         if (result > 0) {
             newConfigPlugin.id = configPlugin_id;
@@ -99,7 +109,7 @@ async function destroyOne(req, res, next) {
     const configPlugin_id = req.params.id;
 
     try {
-        let result = await ConfigPluginPipe.destroy({ where: { id: configPlugin_id } });
+        let result = await ConfigPlugins.destroy({ where: { id: configPlugin_id } });
 
         if (result > 0) {
             res.status(200).json({ message: "A configuração do plugin foi removida!" });

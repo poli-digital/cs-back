@@ -1,4 +1,4 @@
-import {Papel, Permissao, User, Empresa} from "../models/index.js";
+import {Papel, Permissao, User, Empresa, ConfigPlugins} from "../models/index.js";
 
 async function podeCriarUmaEmpresa(req, res, next) {
     let usuarioAutenticado = await retornaUmUsuario(req.user.id);
@@ -83,15 +83,46 @@ async function podeRemoverUmUsuario(req, res, next) {
     }
 }
 
-function podeCriarUmPlugin(req, res, next) {
-    //verificaPermissao(req, res, next, 'criar_plugin');
+async function canCreateAConfigurationOfAPlugin(req, res, next) {
+    let userAuthenticated = await retornaUmUsuario(req.user.id);
+    let isRotaPermitida = await permissaoDeAcessoARota(userAuthenticated, 'criar_plugin');
+    if(isRotaPermitida){
+        next();
+    }else{
+        res.status(401).json({message:`Você não tem permissão para acessar esta rota com o papel de ${userAuthenticated?.papel?.nome}!`});
+    }
 }
 
-function podeEditarUmPlugin(req, res, next) {
-    //verificaPermissao(req, res, next, 'editar_plugin');
+async function canEditAConfigurationOfAPlugin(req, res, next) {
+    let usuarioAutenticado = await retornaUmUsuario(req.user.id);
+    let configurationOfPluginThatWillBeManipulated = await returnPluginConfigurationAsManipulated(req.params.id);
+    let routeIsAllowed = await permissaoDeAcessoARota(usuarioAutenticado, 'editar_plugin');
+    if(routeIsAllowed){
+        let manipulateConfigPluginIsAllowed = permissionToManipulateTheConfigurationOfAPlugin(usuarioAutenticado,  configurationOfPluginThatWillBeManipulated);
+        if(manipulateConfigPluginIsAllowed){
+            next();
+        }else{
+            res.status(401).json({message:'You can only edit your plugins!'});
+        }
+    }else{
+        res.status(401).json({message:`You are not allowed to access this route with the role of ${usuarioAutenticado?.papel?.nome}!`});
+    }
 }
-function podeRemoverUmPlugin(req, res, next) {
-    //verificaPermissao(req, res, next, 'excluir_plugin');
+
+async function canRemoveAConfigurationOfAPlugin(req, res, next) {
+    let usuarioAutenticado = await retornaUmUsuario(req.user.id);
+    let configurationOfPluginThatWillBeManipulated = await returnPluginConfigurationAsManipulated(req.params.id);
+    let routeIsAllowed = await permissaoDeAcessoARota(usuarioAutenticado, 'excluir_plugin');
+    if(routeIsAllowed){
+        let manipulateConfigPluginIsAllowed = permissionToManipulateTheConfigurationOfAPlugin(usuarioAutenticado,  configurationOfPluginThatWillBeManipulated);
+        if(manipulateConfigPluginIsAllowed){
+            next();
+        }else{
+            res.status(401).json({message:'You can only edit your plugins!'});
+        }
+    }else{
+        res.status(401).json({message:`You are not allowed to access this route with the role of ${usuarioAutenticado?.papel?.nome}!`});
+    }
 }
 
 async function permissaoDeAcessoARota(usuarioAutenticado, permissaoNecessaria) {
@@ -148,6 +179,24 @@ function permissaoParaManipularUmUsuario(usuarioAutenticado, usuarioQueSeraManip
     }
 }
 
+// O usuário só pode manipular uma configuração de plugin que pertence a sua própria empresa.
+function permissionToManipulateTheConfigurationOfAPlugin(userAuthenticated, configurationOfPluginThatWillBeManipulated) {
+
+    if(userAuthenticated && configurationOfPluginThatWillBeManipulated){
+        
+        if(userAuthenticated.papel.nome == 'super'){
+            return true;
+        }
+
+        const idDaEmpresaDoUsuarioAutenticado = userAuthenticated.empresa.id;
+        const idDaEmpresaDoUsuarioQueSeraManipulado = configurationOfPluginThatWillBeManipulated.company_id;
+        return (idDaEmpresaDoUsuarioAutenticado == idDaEmpresaDoUsuarioQueSeraManipulado);
+
+    }else{
+        return false;
+    }
+}
+
 function papelTemPermissaoParaAcessarARota (permissaoNecessariaParaAcessarARotaParaAcessarARota, arrayPermissoesDoPapel){
     return arrayPermissoesDoPapel.includes(permissaoNecessariaParaAcessarARotaParaAcessarARota);
 }
@@ -180,9 +229,18 @@ const retornaPermissoesDeUmpapel = async (idPapel)=>{
     }
 }
 
+const returnPluginConfigurationAsManipulated = async (configPluginId) => {
+    try{
+        return await ConfigPlugins.findByPk(configPluginId);
+    }catch(e){
+        console.log('Error returning a plugin configuration', e);
+        return null;
+    }
+}
+
 export {podeCriarUmaEmpresa, podeEditarUmaEmpresa, podeRemoverUmaEmpresa,
     podeCriarUmUsuario, podeEditarUmUsuario, podeRemoverUmUsuario, 
-    podeCriarUmPlugin, podeEditarUmPlugin, podeRemoverUmPlugin,
+    canCreateAConfigurationOfAPlugin, canEditAConfigurationOfAPlugin, canRemoveAConfigurationOfAPlugin,
     permissaoParaManipularUmaEmpresa, permissaoParaManipularUmUsuario,
-    papelTemPermissaoParaAcessarARota
+    papelTemPermissaoParaAcessarARota, permissionToManipulateTheConfigurationOfAPlugin
 };

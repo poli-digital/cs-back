@@ -1,7 +1,7 @@
 import database, {Sequelize} from '../lib/database/sequelize.js'
 
-let ConfigPluginPipe = database.define(
-    "config_plugin_pipe",
+let ConfigPlugins = database.define(
+    "config_plugins",
     {
       token: Sequelize.STRING,
       visible: Sequelize.BOOLEAN,
@@ -16,13 +16,18 @@ let ConfigPluginPipe = database.define(
       field_stage: Sequelize.BOOLEAN,
       field_funnel: Sequelize.BOOLEAN,
       field_status: Sequelize.BOOLEAN,
+      field_id_contact: Sequelize.BOOLEAN,
+      field_name: Sequelize.BOOLEAN,
+      field_number: Sequelize.BOOLEAN,
+      field_company: Sequelize.BOOLEAN,
+      field_talk: Sequelize.BOOLEAN,
     },
     {
       timestamps: true,
       createdAt: "created_at",
       updatedAt: "updated_at",
-      tableName: 'config_plugin_pipe'
+      tableName: 'config_plugins'
     }
 );
 
-export default ConfigPluginPipe;
+export default ConfigPlugins;

@@ -110,7 +110,7 @@ INSERT into plugins(nome, titulo, descricao) VALUES ('Polichat', 'Polichat', 'Es
 INSERT into plugins(nome, titulo, descricao) VALUES ('Superlógica', 'Superlógica', 'Pagamentos');
 INSERT into plugins(nome, titulo, descricao) VALUES ('Datawarehouse', 'Datawarehouse', 'Banco pessoal');
 
-CREATE TABLE config_plugin_pipe(
+CREATE TABLE config_plugins(
 	id int NOT NULL AUTO_INCREMENT PRIMARY KEY,
 	company_id int NOT NULL,
 	plugin_id int NOT NULL,
@@ -129,25 +129,6 @@ CREATE TABLE config_plugin_pipe(
 	field_stage BOOLEAN NOT NULL,
 	field_funnel BOOLEAN NOT NULL,
 	field_status BOOLEAN NOT NULL,
-	created_at DATETIME,
-	updated_at DATETIME
-);
-
-INSERT into config_plugin_pipe(
-	company_id, plugin_id, token, visible, title, use_accordion, field_id, field_activity, field_title,
-	field_notes, field_creation, field_owner, field_stage, field_funnel, field_status
-) VALUES (1, 1, 'ttt', true, 'Atividades', true, true, true, true, true, true, true, true, true, true);
-
-CREATE TABLE config_plugin_poli(
-	id int NOT NULL AUTO_INCREMENT PRIMARY KEY,
-	company_id int NOT NULL,
-	plugin_id int NOT NULL,
-	FOREIGN KEY (company_id) REFERENCES empresas(id),
-	FOREIGN KEY (plugin_id) REFERENCES plugins(id),
-	token TEXT NOT NULL,
-	visible BOOLEAN NOT NULL,
-	title varchar(255) NOT NULL,
-	field_id BOOLEAN NOT NULL,
 	field_id_contact BOOLEAN NOT NULL,
 	field_name BOOLEAN NOT NULL,
 	field_number BOOLEAN NOT NULL,
@@ -157,12 +138,14 @@ CREATE TABLE config_plugin_poli(
 	updated_at DATETIME
 );
 
-INSERT into config_plugin_poli(
-	company_id, plugin_id, token, visible, title, field_id, field_id_contact, field_name,
-	field_number, field_company, field_talk
-) VALUES (1, 2, 'aaa', true, 'Contatos', true, true, true, true, true, true );
-
-
+INSERT into config_plugins(
+	company_id, plugin_id, token, visible, title, use_accordion, field_id, field_activity, field_title,
+	field_notes, field_creation, field_owner, field_stage, field_funnel, field_status, field_id_contact,
+	field_name, field_number, field_company, field_talk
+) VALUES (
+	1, 1, 'ttt', true, 'Atividades', true, true, true, true, true, 
+	true, true, true, true, true, true, true, true, true, true
+);
 
 
 ------------------------------ Drops ------------------------------
@@ -171,7 +154,6 @@ DROP TABLE usuarios;
 DROP TABLE papeis_permissoes;
 DROP TABLE papeis;
 DROP TABLE permissoes;
-DROP TABLE config_plugin_pipe;
-DROP TABLE config_plugin_poli;
+DROP TABLE config_plugins;
 DROP TABLE plugins;
 DROP TABLE empresas;
