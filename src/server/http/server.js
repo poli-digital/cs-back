@@ -1,6 +1,6 @@
 import express from 'express'
-import empresaRouter from './routes/empresaRouter.js'
-import usuarioRouter from './routes/usuarioRouter.js'
+import companyRouter from './routes/companyRouter.js'
+import userRouter from './routes/userRouter.js'
 import authRouter from './routes/authRouter.js'
 import {podeCriarUmaEmpresa} from '../../controllers/validacaoController.js'
 import {isAuth} from '../../controllers/authController.js'
@@ -12,8 +12,8 @@ app.use(express.json());
 
 app.use("/auth", authRouter);
 
-app.use("/empresas", isAuth, empresaRouter);
-app.use("/usuarios", isAuth, usuarioRouter);
+app.use("/empresas", isAuth, companyRouter);
+app.use("/usuarios", isAuth, userRouter);
 app.use("/plugins", pluginRouter);
 app.use('/configPlugins', isAuth, configPluginsRouter);
 

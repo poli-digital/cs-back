@@ -5,32 +5,30 @@ import config from '../config/config.js'
 
 async function login(req, res, next) {
     
-    const emailInformado = req.body.email;
-    const senhaInformada = req.body.senha;
-
-    //TODO implementar se email ou senha não vier no body para não quebrar
+    const emailInformed = req.body.email;
+    const passwordInformed = req.body.password;
 
     try {
         
-        let user = await User.findOne({ where: { email: emailInformado } });
+        let user = await User.findOne({ where: { email: emailInformed } });
         
         if(!user){
-            res.status(404).json({ message: "Email inválido ou senha incorreta!" });
+            res.status(404).json({ message: "Invalid email or incorrect password!" });
         }else{
             
-            let senhaExisteNoBanco = bcrypt.compareSync(senhaInformada, user.senha);
-            if(!senhaExisteNoBanco){
-                res.status(404).json({ message: "Email inválido ou senha incorreta!" });
+            let passwordExistsInBank = bcrypt.compareSync(passwordInformed, user.password);
+            if(!passwordExistsInBank){
+                res.status(404).json({ message: "Invalid email or incorrect password!" });
             }else{
 
-                let conteudoDoToken = {
+                let tokenContent = {
                     id: user.id
                 }
 
                 //let token = jwt.sign({ user: conteudoDoToken}, config.TOKEN_SECRET, { expiresIn: '4h' });
-                let token = jwt.sign({ user: conteudoDoToken}, config.TOKEN_SECRET);
+                let token = jwt.sign({ user: tokenContent}, config.TOKEN_SECRET);
                 res.header('token', token);
-                res.status(200).json({ message: "Logado com sucesso!"});
+                res.status(200).json({ message: "Successfully logged in!"});
             }
         }
 
@@ -44,15 +42,15 @@ async function isAuth(req, res, next) {
     const token = req.header('token');
 
     if(!token){
-        res.status(401).json({ message: "Acesso negado! Você pressica fornecer o token!" });
+        res.status(401).json({ message: "Access denied! You press to provide the token!" });
     }else{
         
         try {
-            let usuarioVerificado = jwt.verify(token, config.TOKEN_SECRET);
-            req.user = usuarioVerificado.user;
+            let userVerified = jwt.verify(token, config.TOKEN_SECRET);
+            req.user = userVerified.user;
             next();
         } catch (e) {
-            res.status(401).json({ message: "Acesso negado! O seu token expirou ou esta inválido!" });
+            res.status(401).json({ message: "Access denied! Your token has expired or is invalid!" });
         }
 
     }

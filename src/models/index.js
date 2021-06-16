@@ -1,24 +1,24 @@
-import Empresa from './empresa.js'
+import Company from './company.js'
 import User from './user.js';
-import Papel from './papel.js';
-import Permissao from './permissao.js';
-import PapeisPermissoes from './papeisPermissoes.js'
+import Role from './role.js';
+import Permission from './permission.js';
+import RolesPermissions from './papeisPermissoes.js'
 import Plugin from './plugin.js'
 import ConfigPlugins from './configPlugin.js'
 
-Papel.hasMany(User, {foreignKey: 'papel_id', as: 'papel'});
-User.belongsTo(Papel, {foreignKey: 'papel_id', as: 'papel'})
+Role.hasMany(User, {foreignKey: 'role_id', as: 'papel'});
+User.belongsTo(Role, {foreignKey: 'role_id', as: 'papel'})
 
-Empresa.hasMany(User, {foreignKey: 'empresa_id', as: 'empresa'}); // no caso do hasMany é o (user)
-User.belongsTo(Empresa, {foreignKey: 'empresa_id', as: 'empresa'}); // belongsTo é a chave estrangeira;
+Company.hasMany(User, {foreignKey: 'company_id', as: 'empresa'}); // no caso do hasMany é o (user)
+User.belongsTo(Company, {foreignKey: 'company_id', as: 'empresa'}); // belongsTo é a chave estrangeira;
 
-Papel.belongsToMany(Permissao, {foreignKey: 'papel_id', through: PapeisPermissoes});
-Permissao.belongsToMany(Papel, {foreignKey: 'permissao_id', through: PapeisPermissoes});
+Role.belongsToMany(Permission, {foreignKey: 'role_id', through: RolesPermissions});
+Permission.belongsToMany(Role, {foreignKey: 'permission_id', through: RolesPermissions});
 
-Empresa.hasMany(ConfigPlugins, {foreignKey: 'company_id', as: 'config_plugins_company'});
-ConfigPlugins.belongsTo(Empresa, {foreignKey: 'company_id', as: 'config_plugins_company'});
+Company.hasMany(ConfigPlugins, {foreignKey: 'company_id', as: 'config_plugins_company'});
+ConfigPlugins.belongsTo(Company, {foreignKey: 'company_id', as: 'config_plugins_company'});
 
 Plugin.hasMany(ConfigPlugins, {foreignKey: 'plugin_id', as: 'config_plugins_plugin'});
 ConfigPlugins.belongsTo(Plugin, {foreignKey: 'plugin_id', as: 'config_plugins_plugin'});
 
-export {Empresa, User, Papel, Permissao, PapeisPermissoes, Plugin, ConfigPlugins}
+export {Company, User, Role, Permission, RolesPermissions, Plugin, ConfigPlugins}

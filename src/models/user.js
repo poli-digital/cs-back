@@ -1,12 +1,12 @@
 import database, {Sequelize} from '../lib/database/sequelize.js'
 
 let User = database.define(
-    "usuarios",
+    "user",
     {
-      nome: Sequelize.STRING,
+      name: Sequelize.STRING,
       email: Sequelize.STRING,
-      senha: Sequelize.STRING,
-      bloqueado: Sequelize.BOOLEAN,
+      password: Sequelize.STRING,
+      blocked: Sequelize.BOOLEAN,
     },
     {
       timestamps: true,

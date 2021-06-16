@@ -1,13 +1,13 @@
-import {ConfigPlugins, Empresa, Plugin} from '../models/index.js'
+import {ConfigPlugins, Company, Plugin} from '../models/index.js'
 
 async function findAll(req, res, next) {
     try {
-        let configPlugins = await ConfigPlugins.findAll({include: [{ model: Empresa, as: 'config_plugins_company' }, {model: Plugin, as: 'config_plugins_plugin'}]});
+        let configPlugins = await ConfigPlugins.findAll({include: [{ model: Company, as: 'config_plugins_company' }, {model: Plugin, as: 'config_plugins_plugin'}]});
 
         if (configPlugins.length > 0) {
             res.status(200).json(configPlugins);
         } else {
-            res.status(404).json({ message: "Não foi encontrado nenhuma configuração de Plugins!" });
+            res.status(404).json({ message: "No Plugins settings found!" });
         }
     } catch (e) {
         next(e);
@@ -53,12 +53,12 @@ async function findOne(req, res, next) {
     const configPlugin_id = req.params.id;
 
     try {
-        let configPlugin = await ConfigPlugins.findByPk(configPlugin_id, {include: [{ model: Empresa, as: 'config_plugins_company' }, {model: Plugin, as: 'config_plugins_plugin'}]});
+        let configPlugin = await ConfigPlugins.findByPk(configPlugin_id, {include: [{ model: Company, as: 'config_plugins_company' }, {model: Plugin, as: 'config_plugins_plugin'}]});
 
         if (configPlugin) {
             res.status(200).json(configPlugin);
         } else {
-            res.status(404).json({ message: "A configuração de plugin não foi encontrada!" });
+            res.status(404).json({ message: "No Plugins settings found!" });
         }
     } catch (e) {
         next(e);
@@ -98,7 +98,7 @@ async function updateOne(req, res, next) {
             newConfigPlugin.id = configPlugin_id;
             res.status(200).json(newConfigPlugin);
         } else {
-            res.status(404).json({ message: "A configuração de plugin não foi encontrada!" });
+            res.status(404).json({ message: "No Plugins settings found!" });
         }
     } catch (e) {
         next(e);
@@ -112,9 +112,9 @@ async function destroyOne(req, res, next) {
         let result = await ConfigPlugins.destroy({ where: { id: configPlugin_id } });
 
         if (result > 0) {
-            res.status(200).json({ message: "A configuração do plugin foi removida!" });
+            res.status(200).json({ message: "The plugin configuration has been removed!" });
         } else {
-            res.status(404).json({ message: "A configuração de plugin não foi encontrada!" });
+            res.status(404).json({ message: "No Plugins settings found!" });
         }
     } catch (e) {
         next(e);

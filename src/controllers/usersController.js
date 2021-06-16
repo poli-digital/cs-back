@@ -1,15 +1,15 @@
-import {User, Papel, Empresa} from '../models/index.js'
+import {User, Role, Company} from '../models/index.js'
 import bcrypt from 'bcryptjs'
 
 async function insertOne(req, res, next) {
     try {
         const user = {
-            nome: req.body.nome,
+            name: req.body.nome,
             email: req.body.email,
-            senha: bcrypt.hashSync(req.body.senha),
-            bloqueado: false,
-            papel_id: req.body.idPapel,
-            empresa_id: req.body.IdEmpresa
+            password: bcrypt.hashSync(req.body.password),
+            blocked: false,
+            role_id: req.body.role_id,
+            company_id: req.body.company_id
         };
 
         let result = await User.create(user);
@@ -24,12 +24,12 @@ async function insertOne(req, res, next) {
 
 async function findAll(req, res, next) {
     try {
-        let user = await User.findAll({include: [{ model: Papel, as: 'papel' }, {model: Empresa, as: 'empresa'}]});
+        let user = await User.findAll({include: [{ model: Role, as: 'papel' }, {model: Company, as: 'empresa'}]});
 
         if (user.length > 0) {
             res.status(200).json(user);
         } else {
-            res.status(404).json({ message: "Usuário não encontrado!" });
+            res.status(404).json({ message: "User not found!" });
         }
     } catch (e) {
         next(e);
@@ -40,12 +40,12 @@ async function findOne(req, res, next) {
     const user_id = req.params.id;
 
     try {
-        let user = await User.findByPk(user_id, {include: [{ model: Papel, as: 'papel' }, {model: Empresa, as: 'empresa'}]});
+        let user = await User.findByPk(user_id, {include: [{ model: Role, as: 'papel' }, {model: Company, as: 'empresa'}]});
 
         if (user) {
             res.status(200).json(user);
         } else {
-            res.status(404).json({ message: "Usuário não encontrado!" });
+            res.status(404).json({ message: "User not found!" });
         }
     } catch (e) {
         next(e);
@@ -64,7 +64,7 @@ async function findAllGroup(req, res, next) {
         if (user.length > 0) {
             res.status(200).json(user);
         } else {
-            res.status(404).json({ message: "Usuário não encontrado!" });
+            res.status(404).json({ message: "User not found!" });
         }
     } catch (e) {
         next(e);
@@ -75,21 +75,21 @@ async function updateOne(req, res, next) {
     const user_id = req.params.id;
 
     const newUser = {
-        nome: req.body.nome,
+        name: req.body.nome,
         email: req.body.email,
-        bloqueado: req.body.bloqueado,
-        papel_id: req.body.idPapel,
-        empresa_id: req.body.IdEmpresa
+        blocked: req.body.bloqueado,
+        role_id: req.body.role_id,
+        company_id: req.body.company_id
     };
 
     try {
-        let result = await User.update(newUser, { where: { id: user_id }, include: [{ model: Papel, as: 'papel' }] });
+        let result = await User.update(newUser, { where: { id: user_id }, include: [{ model: Role, as: 'papel' }] });
 
         if (result > 0) {
             newUser.id = user_id;
             res.status(200).json(newUser);
         } else {
-            res.status(404).json({ message: "Usuário não encontrado!" });
+            res.status(404).json({ message: "User not found!" });
         }
     } catch (e) {
         next(e);
@@ -103,9 +103,9 @@ async function destroyOne(req, res, next) {
         let result = await User.destroy({ where: { id: user_id } });
 
         if (result > 0) {
-            res.status(200).json({ message: "Usuário removido!" });
+            res.status(200).json({ message: "user has been removed successfully!" });
         } else {
-            res.status(404).json({ message: "Usuário não encontrado!" });
+            res.status(404).json({ message: "User not found!" });
         }
     } catch (e) {
         next(e);

@@ -1,4 +1,4 @@
-import {Papel, Permissao, User, Empresa, ConfigPlugins} from "../models/index.js";
+import {Role, Permission, User, Company, ConfigPlugins} from "../models/index.js";
 
 async function podeCriarUmaEmpresa(req, res, next) {
     let usuarioAutenticado = await retornaUmUsuario(req.user.id);
@@ -52,7 +52,6 @@ async function podeCriarUmUsuario(req, res, next) {
 
 async function podeEditarUmUsuario(req, res, next) {
     let usuarioAutenticado = await retornaUmUsuario(req.user.id);
-    console.log('usuario autenticado:', usuarioAutenticado)
     let usuarioASerManipulado = await retornaUmUsuario(req.params.id);
     let isRotaPermitida = await permissaoDeAcessoARota(usuarioAutenticado, 'editar_usuario');
     if(isRotaPermitida){
@@ -148,7 +147,7 @@ function permissaoParaManipularUmaEmpresa(idEmpresaParams, usuarioAutenticado) {
 
     if(usuarioAutenticado){
 
-        if(usuarioAutenticado.papel.nome == 'super'){
+        if(usuarioAutenticado.papel.name == 'super'){
             return true;
         }
         
@@ -166,7 +165,7 @@ function permissaoParaManipularUmUsuario(usuarioAutenticado, usuarioQueSeraManip
     
     if(usuarioAutenticado && usuarioQueSeraManipulado){
 
-        if(usuarioAutenticado.papel.nome == 'super'){
+        if(usuarioAutenticado.papel.name == 'super'){
             return true;
         }
 
@@ -184,7 +183,7 @@ function permissionToManipulateTheConfigurationOfAPlugin(userAuthenticated, conf
 
     if(userAuthenticated && configurationOfPluginThatWillBeManipulated){
         
-        if(userAuthenticated.papel.nome == 'super'){
+        if(userAuthenticated.papel.name == 'super'){
             return true;
         }
 
@@ -204,7 +203,7 @@ function papelTemPermissaoParaAcessarARota (permissaoNecessariaParaAcessarARotaP
 
 const retornaUmUsuario = async (idUsuario)=>{
     try{
-        return await User.findByPk(idUsuario, {include: [{ model: Papel, as: 'papel' }, {model: Empresa, as: 'empresa'}]});
+        return await User.findByPk(idUsuario, {include: [{ model: Role, as: 'papel' }, {model: Company, as: 'empresa'}]});
     }catch(e){
         console.log('Erro ao retornar usuário', e);
         return null;
@@ -213,11 +212,11 @@ const retornaUmUsuario = async (idUsuario)=>{
 
 const retornaPermissoesDeUmpapel = async (idPapel)=>{
     try{
-        let buscaPemissoes = await Papel.findByPk(idPapel, {include: Permissao});
+        let buscaPemissoes = await Role.findByPk(idPapel, {include: Permission});
         if(buscaPemissoes){
             let arrayPermissoes = [];
-            buscaPemissoes.permissoes.forEach(permissao => {
-                arrayPermissoes.push(permissao.nome);
+            buscaPemissoes.permissions.forEach(permissao => {
+                arrayPermissoes.push(permissao.name);
             });
             return arrayPermissoes;
         }else{

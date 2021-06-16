@@ -7,7 +7,7 @@ async function findAll(req, res, next) {
         if (plugin.length > 0) {
             res.status(200).json(plugin);
         } else {
-            res.status(404).json({ message: "Plugins não encontrado!" });
+            res.status(404).json({ message: "Plugins not found!" });
         }
     } catch (e) {
         next(e);

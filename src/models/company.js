@@ -1,9 +1,9 @@
 import database, {Sequelize} from '../lib/database/sequelize.js'
 
-let Empresa = database.define(
-    "empresas",
+let Company = database.define(
+    "companies",
     {
-      nome: Sequelize.STRING,
+      name: Sequelize.STRING,
       cnpj: Sequelize.STRING,
     },
     {
@@ -13,4 +13,4 @@ let Empresa = database.define(
     }
 );
 
-export default Empresa;
+export default Company;

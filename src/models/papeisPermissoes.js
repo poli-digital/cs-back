@@ -1,11 +1,11 @@
 import database, {Sequelize} from '../lib/database/sequelize.js'
 
-let PapeisPermissoes = database.define(
-    "papeis_permissoes",
+let RolesPermissions = database.define(
+    "roles_permissions",
     {},
     {
       timestamps: false,
     }
 );
 
-export default PapeisPermissoes;
+export default RolesPermissions;
