@@ -24,7 +24,7 @@ async function insertOne(req, res, next) {
 
 async function findAll(req, res, next) {
     try {
-        let user = await User.findAll({include: [{ model: Role, as: 'papel' }, {model: Company, as: 'empresa'}]});
+        let user = await User.findAll({include: [{ model: Role, as: 'role' }, {model: Company, as: 'company'}]});
 
         if (user.length > 0) {
             res.status(200).json(user);
@@ -40,7 +40,7 @@ async function findOne(req, res, next) {
     const user_id = req.params.id;
 
     try {
-        let user = await User.findByPk(user_id, {include: [{ model: Role, as: 'papel' }, {model: Company, as: 'empresa'}]});
+        let user = await User.findByPk(user_id, {include: [{ model: Role, as: 'role' }, {model: Company, as: 'company'}]});
 
         if (user) {
             res.status(200).json(user);
@@ -83,7 +83,7 @@ async function updateOne(req, res, next) {
     };
 
     try {
-        let result = await User.update(newUser, { where: { id: user_id }, include: [{ model: Role, as: 'papel' }] });
+        let result = await User.update(newUser, { where: { id: user_id }, include: [{ model: Role, as: 'role' }] });
 
         if (result > 0) {
             newUser.id = user_id;

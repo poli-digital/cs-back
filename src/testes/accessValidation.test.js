@@ -286,50 +286,50 @@ test('Manager can modify a plugin configuration from another company?', () => {
 
 const authenticatedUser_id1_company1_superuser = {
     "id": 1,
-    "empresa": {
+    "company": {
         "id": 1,
     },
-    "papel": {
+    "role": {
         "name": "super"
     }
 }
 
 const authenticatedUser_id1_empresa1_owner = {
     "id": 1,
-    "empresa": {
+    "company": {
         "id": 1,
     },
-    "papel": {
+    "role": {
         "name": "owner"
     }
 }
 
 const authenticatedUser_id1_empresa1_manager = {
     "id": 1,
-    "empresa": {
+    "company": {
         "id": 1,
     },
-    "papel": {
+    "role": {
         "name": "manager"
     }
 }
 
 const usuarioAserManipulado_id1_empresa1_superuser = {
     "id": 1,
-    "empresa": {
+    "company": {
         "id": 1,
     },
-    "papel": {
+    "role": {
         "name": "super"
     }
 }
 
 const usuarioAserManipulado_id2_empresa2_superuser = {
     "id": 2,
-    "empresa": {
+    "company": {
         "id": 2,
     },
-    "papel": {
+    "role": {
         "name": "super"
     }
 }

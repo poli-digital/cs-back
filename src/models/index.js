@@ -6,11 +6,11 @@ import RolesPermissions from './rolesPermissions.js'
 import Plugin from './plugin.js'
 import ConfigPlugins from './configPlugin.js'
 
-Role.hasMany(User, {foreignKey: 'role_id', as: 'papel'});
-User.belongsTo(Role, {foreignKey: 'role_id', as: 'papel'})
+Role.hasMany(User, {foreignKey: 'role_id', as: 'role'});
+User.belongsTo(Role, {foreignKey: 'role_id', as: 'role'})
 
-Company.hasMany(User, {foreignKey: 'company_id', as: 'empresa'}); // no caso do hasMany é o (user)
-User.belongsTo(Company, {foreignKey: 'company_id', as: 'empresa'}); // belongsTo é a chave estrangeira;
+Company.hasMany(User, {foreignKey: 'company_id', as: 'company'}); // no caso do hasMany é o (user)
+User.belongsTo(Company, {foreignKey: 'company_id', as: 'company'}); // belongsTo é a chave estrangeira;
 
 Role.belongsToMany(Permission, {foreignKey: 'role_id', through: RolesPermissions});
 Permission.belongsToMany(Role, {foreignKey: 'permission_id', through: RolesPermissions});

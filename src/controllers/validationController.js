@@ -1,137 +1,137 @@
 import {Role, Permission, User, Company, ConfigPlugins} from "../models/index.js";
 
 async function canCreateACompany(req, res, next) {
-    let usuarioAutenticado = await returnsOneUser(req.user.id);
-    let isRotaPermitida = await permissionOfAccessARoute(usuarioAutenticado, 'criar_empresa');
-    if(isRotaPermitida){
+    let userAuthenticated = await returnsOneUser(req.user.id);
+    let isRouteAllowed = await permissionOfAccessARoute(userAuthenticated, 'criar_empresa');
+    if(isRouteAllowed){
         next();
     }else{
-        res.status(401).json({message:`Você não tem permissão para acessar esta rota com o papel de ${usuarioAutenticado?.papel?.nome}!`});
+        res.status(401).json({message:`Você não tem permissão para acessar esta rota com o papel de ${userAuthenticated?.role?.name}!`});
     }
 }
 
 async function canEditOneCompany(req, res, next) {
-    let usuarioAutenticado = await returnsOneUser(req.user.id);
-    let isRotaPermitida = await permissionOfAccessARoute(usuarioAutenticado, 'editar_empresa');
-    if(isRotaPermitida){
-        let isPermitidoManipularEmpresa = permissionToManipulateACompany(req.params.id, usuarioAutenticado);
+    let userAuthenticated = await returnsOneUser(req.user.id);
+    let isRouteAllowed = await permissionOfAccessARoute(userAuthenticated, 'editar_empresa');
+    if(isRouteAllowed){
+        let isPermitidoManipularEmpresa = permissionToManipulateACompany(req.params.id, userAuthenticated);
         if(isPermitidoManipularEmpresa){
             next();
         }else{
             res.status(401).json({message:'Você só pode editar as suas empresas!'});
         }
     }else{
-        res.status(401).json({message:`Você não tem permissão para acessar esta rota com o papel de ${usuarioAutenticado?.papel?.nome}!`});
+        res.status(401).json({message:`Você não tem permissão para acessar esta rota com o papel de ${userAuthenticated?.role?.name}!`});
     }
 }
 
 async function canRemoveACompany(req, res, next) {
-    let usuarioAutenticado = await returnsOneUser(req.user.id);
-    let isRotaPermitida = await permissionOfAccessARoute(usuarioAutenticado, 'excluir_empresa');
-    if(isRotaPermitida){
-        let isPermitidoManipularEmpresa = permissionToManipulateACompany(req.params.id, usuarioAutenticado);
+    let userAuthenticated = await returnsOneUser(req.user.id);
+    let isRouteAllowed = await permissionOfAccessARoute(userAuthenticated, 'excluir_empresa');
+    if(isRouteAllowed){
+        let isPermitidoManipularEmpresa = permissionToManipulateACompany(req.params.id, userAuthenticated);
         if(isPermitidoManipularEmpresa){
             next();
         }else{
             res.status(401).json({message:'Você só pode remover as suas empresas!'});
         }
     }else{
-        res.status(401).json({message:`Você não tem permissão para acessar esta rota com o papel de ${usuarioAutenticado?.papel?.nome}!`});
+        res.status(401).json({message:`Você não tem permissão para acessar esta rota com o papel de ${userAuthenticated?.role?.name}!`});
     }
 }
 
 async function cancreateAUser(req, res, next) {
-    let usuarioAutenticado = await returnsOneUser(req.user.id);
-    let isRotaPermitida = await permissionOfAccessARoute(usuarioAutenticado, 'criar_usuario');
-    if(isRotaPermitida){
+    let userAuthenticated = await returnsOneUser(req.user.id);
+    let isRouteAllowed = await permissionOfAccessARoute(userAuthenticated, 'criar_usuario');
+    if(isRouteAllowed){
         next();
     }else{
-        res.status(401).json({message:`Você não tem permissão para acessar esta rota com o papel de ${usuarioAutenticado?.papel?.nome}!`});
+        res.status(401).json({message:`Você não tem permissão para acessar esta rota com o papel de ${userAuthenticated?.role?.name}!`});
     }
 }
 
 async function canEditOneUser(req, res, next) {
-    let usuarioAutenticado = await returnsOneUser(req.user.id);
-    let usuarioASerManipulado = await returnsOneUser(req.params.id);
-    let isRotaPermitida = await permissionOfAccessARoute(usuarioAutenticado, 'editar_usuario');
-    if(isRotaPermitida){
-        let isPermitidoManipularUsuario = permissionToManipulateAUser(usuarioAutenticado, usuarioASerManipulado);
+    let userAuthenticated = await returnsOneUser(req.user.id);
+    let userToBeManipulated = await returnsOneUser(req.params.id);
+    let isRouteAllowed = await permissionOfAccessARoute(userAuthenticated, 'editar_usuario');
+    if(isRouteAllowed){
+        let isPermitidoManipularUsuario = permissionToManipulateAUser(userAuthenticated, userToBeManipulated);
         if(isPermitidoManipularUsuario){
             next();
         }else{
             res.status(401).json({message:'Você só pode editar os seus usuários!'});
         }
     }else{
-        res.status(401).json({message:`Você não tem permissão para acessar esta rota com o papel de ${usuarioAutenticado?.papel?.nome}!`});
+        res.status(401).json({message:`Você não tem permissão para acessar esta rota com o papel de ${userAuthenticated?.role?.name}!`});
     }
 }
 
 async function canRemoveAUser(req, res, next) {
-    let usuarioAutenticado = await returnsOneUser(req.user.id);
-    let usuarioASerManipulado = await returnsOneUser(req.params.id);
-    let isRotaPermitida = await permissionOfAccessARoute(usuarioAutenticado, 'excluir_usuario');
-    if(isRotaPermitida){
-        let isPermitidoManipularUsuario = permissionToManipulateAUser(usuarioAutenticado, usuarioASerManipulado);
+    let userAuthenticated = await returnsOneUser(req.user.id);
+    let userToBeManipulated = await returnsOneUser(req.params.id);
+    let isRouteAllowed = await permissionOfAccessARoute(userAuthenticated, 'excluir_usuario');
+    if(isRouteAllowed){
+        let isPermitidoManipularUsuario = permissionToManipulateAUser(userAuthenticated, userToBeManipulated);
         if(isPermitidoManipularUsuario){
             next();
         }else{
             res.status(401).json({message:'Você só pode remover os seus usuários!'});
         }
     }else{
-        res.status(401).json({message:`Você não tem permissão para acessar esta rota com o papel de ${usuarioAutenticado?.papel?.nome}!`});
+        res.status(401).json({message:`Você não tem permissão para acessar esta rota com o papel de ${userAuthenticated?.role?.name}!`});
     }
 }
 
 async function canCreateAConfigurationOfAPlugin(req, res, next) {
     let userAuthenticated = await returnsOneUser(req.user.id);
-    let isRotaPermitida = await permissionOfAccessARoute(userAuthenticated, 'criar_plugin');
-    if(isRotaPermitida){
+    let isRouteAllowed = await permissionOfAccessARoute(userAuthenticated, 'criar_plugin');
+    if(isRouteAllowed){
         next();
     }else{
-        res.status(401).json({message:`Você não tem permissão para acessar esta rota com o papel de ${userAuthenticated?.papel?.nome}!`});
+        res.status(401).json({message:`Você não tem permissão para acessar esta rota com o papel de ${userAuthenticated?.role?.name}!`});
     }
 }
 
 async function canEditAConfigurationOfAPlugin(req, res, next) {
-    let usuarioAutenticado = await returnsOneUser(req.user.id);
+    let userAuthenticated = await returnsOneUser(req.user.id);
     let configurationOfPluginThatWillBeManipulated = await returnPluginConfigurationAsManipulated(req.params.id);
-    let routeIsAllowed = await permissionOfAccessARoute(usuarioAutenticado, 'editar_plugin');
+    let routeIsAllowed = await permissionOfAccessARoute(userAuthenticated, 'editar_plugin');
     if(routeIsAllowed){
-        let manipulateConfigPluginIsAllowed = permissionToManipulateTheConfigurationOfAPlugin(usuarioAutenticado,  configurationOfPluginThatWillBeManipulated);
+        let manipulateConfigPluginIsAllowed = permissionToManipulateTheConfigurationOfAPlugin(userAuthenticated,  configurationOfPluginThatWillBeManipulated);
         if(manipulateConfigPluginIsAllowed){
             next();
         }else{
             res.status(401).json({message:'You can only edit your plugins!'});
         }
     }else{
-        res.status(401).json({message:`You are not allowed to access this route with the role of ${usuarioAutenticado?.papel?.nome}!`});
+        res.status(401).json({message:`You are not allowed to access this route with the role of ${userAuthenticated?.role?.name}!`});
     }
 }
 
 async function canRemoveAConfigurationOfAPlugin(req, res, next) {
-    let usuarioAutenticado = await returnsOneUser(req.user.id);
+    let userAuthenticated = await returnsOneUser(req.user.id);
     let configurationOfPluginThatWillBeManipulated = await returnPluginConfigurationAsManipulated(req.params.id);
-    let routeIsAllowed = await permissionOfAccessARoute(usuarioAutenticado, 'excluir_plugin');
+    let routeIsAllowed = await permissionOfAccessARoute(userAuthenticated, 'excluir_plugin');
     if(routeIsAllowed){
-        let manipulateConfigPluginIsAllowed = permissionToManipulateTheConfigurationOfAPlugin(usuarioAutenticado,  configurationOfPluginThatWillBeManipulated);
+        let manipulateConfigPluginIsAllowed = permissionToManipulateTheConfigurationOfAPlugin(userAuthenticated,  configurationOfPluginThatWillBeManipulated);
         if(manipulateConfigPluginIsAllowed){
             next();
         }else{
             res.status(401).json({message:'You can only edit your plugins!'});
         }
     }else{
-        res.status(401).json({message:`You are not allowed to access this route with the role of ${usuarioAutenticado?.papel?.nome}!`});
+        res.status(401).json({message:`You are not allowed to access this route with the role of ${userAuthenticated?.role?.name}!`});
     }
 }
 
-async function permissionOfAccessARoute(usuarioAutenticado, permissaoNecessaria) {
+async function permissionOfAccessARoute(userAuthenticated, permissionRequired) {
     
-    if(usuarioAutenticado){
+    if(userAuthenticated){
 
-        let arrayPermissoesDoPapel = await returnsPermissionsOfARole(usuarioAutenticado.papel.id);
-        let isRotaPermitida = roleHasPermissionToAccessARoute(permissaoNecessaria, arrayPermissoesDoPapel);
+        let arrayRolesPermissions = await returnsPermissionsOfARole(userAuthenticated.role.id);
+        let isRouteAllowed = roleHasPermissionToAccessARoute(permissionRequired, arrayRolesPermissions);
        
-        if(isRotaPermitida){
+        if(isRouteAllowed){
             return true;
         }else{
             return false;
@@ -143,17 +143,17 @@ async function permissionOfAccessARoute(usuarioAutenticado, permissaoNecessaria)
 }
 
 // O usuário só pode manipular a sua própria empresa.
-function permissionToManipulateACompany(idEmpresaParams, usuarioAutenticado) {
+function permissionToManipulateACompany(idCompanyParams, userAuthenticated) {
 
-    if(usuarioAutenticado){
+    if(userAuthenticated){
 
-        if(usuarioAutenticado.papel.name == 'super'){
+        if(userAuthenticated.role.name == 'super'){
             return true;
         }
         
-        const idDaEmpresaDoUsuarioAutenticado = usuarioAutenticado.empresa.id;
-        const idDaEmpresaQueDesejaManipular = idEmpresaParams;
-        return (idDaEmpresaDoUsuarioAutenticado == idDaEmpresaQueDesejaManipular);
+        const companyIdOfUserAutenticated = userAuthenticated.company.id;
+        const idOfCompanyYouWantToManipulate = idCompanyParams;
+        return (companyIdOfUserAutenticated == idOfCompanyYouWantToManipulate);
         
     }else{
         return false;
@@ -161,17 +161,17 @@ function permissionToManipulateACompany(idEmpresaParams, usuarioAutenticado) {
 }
 
 // O usuário só pode manipular um usuário que pertence a sua própria empresa.
-function permissionToManipulateAUser(usuarioAutenticado, usuarioQueSeraManipulado) {
+function permissionToManipulateAUser(userAuthenticated, userWhoWillBeManipulated) {
     
-    if(usuarioAutenticado && usuarioQueSeraManipulado){
+    if(userAuthenticated && userWhoWillBeManipulated){
 
-        if(usuarioAutenticado.papel.name == 'super'){
+        if(userAuthenticated.role.name == 'super'){
             return true;
         }
 
-        const idDaEmpresaDoUsuarioAutenticado = usuarioAutenticado.empresa.id;
-        const idDaEmpresaDoUsuarioQueSeraManipulado = usuarioQueSeraManipulado.empresa.id;
-        return (idDaEmpresaDoUsuarioAutenticado == idDaEmpresaDoUsuarioQueSeraManipulado);
+        const companyIdOfUserAutenticated = userAuthenticated.company.id;
+        const companyIdOfUserWhoWillBeManipulated = userWhoWillBeManipulated.company.id;
+        return (companyIdOfUserAutenticated == companyIdOfUserWhoWillBeManipulated);
 
     }else{
         return false;
@@ -183,42 +183,42 @@ function permissionToManipulateTheConfigurationOfAPlugin(userAuthenticated, conf
 
     if(userAuthenticated && configurationOfPluginThatWillBeManipulated){
         
-        if(userAuthenticated.papel.name == 'super'){
+        if(userAuthenticated.role.name == 'super'){
             return true;
         }
 
-        const idDaEmpresaDoUsuarioAutenticado = userAuthenticated.empresa.id;
-        const idDaEmpresaDoUsuarioQueSeraManipulado = configurationOfPluginThatWillBeManipulated.company_id;
-        return (idDaEmpresaDoUsuarioAutenticado == idDaEmpresaDoUsuarioQueSeraManipulado);
+        const companyIdOfUserAutenticated = userAuthenticated.company.id;
+        const companyIdOfUserWhoWillBeManipulated = configurationOfPluginThatWillBeManipulated.company_id;
+        return (companyIdOfUserAutenticated == companyIdOfUserWhoWillBeManipulated);
 
     }else{
         return false;
     }
 }
 
-function roleHasPermissionToAccessARoute (permissaoNecessariaParaAcessarARotaParaAcessarARota, arrayPermissoesDoPapel){
-    return arrayPermissoesDoPapel.includes(permissaoNecessariaParaAcessarARotaParaAcessarARota);
+function roleHasPermissionToAccessARoute (permissionNeededToAccessARouteToAccessARoute, arrayRolesPermissions){
+    return arrayRolesPermissions.includes(permissionNeededToAccessARouteToAccessARoute);
 }
 
 
-const returnsOneUser = async (idUsuario)=>{
+const returnsOneUser = async (idUser)=>{
     try{
-        return await User.findByPk(idUsuario, {include: [{ model: Role, as: 'papel' }, {model: Company, as: 'empresa'}]});
+        return await User.findByPk(idUser, {include: [{ model: Role, as: 'role' }, {model: Company, as: 'company'}]});
     }catch(e){
         console.log('Erro ao retornar usuário', e);
         return null;
     }
 }
 
-const returnsPermissionsOfARole = async (idPapel)=>{
+const returnsPermissionsOfARole = async (idRole)=>{
     try{
-        let buscaPemissoes = await Role.findByPk(idPapel, {include: Permission});
-        if(buscaPemissoes){
-            let arrayPermissoes = [];
-            buscaPemissoes.permissions.forEach(permissao => {
-                arrayPermissoes.push(permissao.name);
+        let paperWithpermissions = await Role.findByPk(idRole, {include: Permission});
+        if(paperWithpermissions){
+            let arrayPermissions = [];
+            paperWithpermissions.permissions.forEach(permission => {
+                arrayPermissions.push(permission.name);
             });
-            return arrayPermissoes;
+            return arrayPermissions;
         }else{
             return [];
         }
@@ -228,9 +228,9 @@ const returnsPermissionsOfARole = async (idPapel)=>{
     }
 }
 
-const returnPluginConfigurationAsManipulated = async (configPluginId) => {
+const returnPluginConfigurationAsManipulated = async (idConfigPlugin) => {
     try{
-        return await ConfigPlugins.findByPk(configPluginId);
+        return await ConfigPlugins.findByPk(idConfigPlugin);
     }catch(e){
         console.log('Error returning a plugin configuration', e);
         return null;
