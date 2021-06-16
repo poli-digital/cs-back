@@ -2,7 +2,7 @@ import Company from './company.js'
 import User from './user.js';
 import Role from './role.js';
 import Permission from './permission.js';
-import RolesPermissions from './papeisPermissoes.js'
+import RolesPermissions from './rolesPermissions.js'
 import Plugin from './plugin.js'
 import ConfigPlugins from './configPlugin.js'
 

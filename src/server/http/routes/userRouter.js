@@ -1,6 +1,6 @@
 import express from 'express'
 import * as usersController from '../../../controllers/usersController.js'
-import { podeCriarUmUsuario, podeEditarUmUsuario, podeRemoverUmUsuario } from '../../../controllers/validacaoController.js';
+import { cancreateAUser, canEditOneUser, canRemoveAUser } from '../../../controllers/validationController.js';
 
 const router = express.Router();
 
@@ -10,7 +10,7 @@ router.get("/", (req, res, next)=>{
 });
 
 // Salva um usuário
-router.post("/", podeCriarUmUsuario, (req, res, next)=>{
+router.post("/", cancreateAUser, (req, res, next)=>{
     usersController.insertOne(req, res, next);
 });
 
@@ -20,12 +20,12 @@ router.get("/:id", (req, res, next)=>{
 });
 
 // Atualiza um usuário especifico
-router.put("/:id", podeEditarUmUsuario, (req, res, next)=>{
+router.put("/:id", canEditOneUser, (req, res, next)=>{
     usersController.updateOne(req, res, next);
 });
 
 // Remove um usuário especifico
-router.delete("/:id", podeRemoverUmUsuario, (req, res, next)=>{
+router.delete("/:id", canRemoveAUser, (req, res, next)=>{
     usersController.destroyOne(req, res, next);
 });
 

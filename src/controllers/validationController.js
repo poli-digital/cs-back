@@ -1,8 +1,8 @@
 import {Role, Permission, User, Company, ConfigPlugins} from "../models/index.js";
 
-async function podeCriarUmaEmpresa(req, res, next) {
-    let usuarioAutenticado = await retornaUmUsuario(req.user.id);
-    let isRotaPermitida = await permissaoDeAcessoARota(usuarioAutenticado, 'criar_empresa');
+async function canCreateACompany(req, res, next) {
+    let usuarioAutenticado = await returnsOneUser(req.user.id);
+    let isRotaPermitida = await permissionOfAccessARoute(usuarioAutenticado, 'criar_empresa');
     if(isRotaPermitida){
         next();
     }else{
@@ -10,11 +10,11 @@ async function podeCriarUmaEmpresa(req, res, next) {
     }
 }
 
-async function podeEditarUmaEmpresa(req, res, next) {
-    let usuarioAutenticado = await retornaUmUsuario(req.user.id);
-    let isRotaPermitida = await permissaoDeAcessoARota(usuarioAutenticado, 'editar_empresa');
+async function canEditOneCompany(req, res, next) {
+    let usuarioAutenticado = await returnsOneUser(req.user.id);
+    let isRotaPermitida = await permissionOfAccessARoute(usuarioAutenticado, 'editar_empresa');
     if(isRotaPermitida){
-        let isPermitidoManipularEmpresa = permissaoParaManipularUmaEmpresa(req.params.id, usuarioAutenticado);
+        let isPermitidoManipularEmpresa = permissionToManipulateACompany(req.params.id, usuarioAutenticado);
         if(isPermitidoManipularEmpresa){
             next();
         }else{
@@ -25,11 +25,11 @@ async function podeEditarUmaEmpresa(req, res, next) {
     }
 }
 
-async function podeRemoverUmaEmpresa(req, res, next) {
-    let usuarioAutenticado = await retornaUmUsuario(req.user.id);
-    let isRotaPermitida = await permissaoDeAcessoARota(usuarioAutenticado, 'excluir_empresa');
+async function canRemoveACompany(req, res, next) {
+    let usuarioAutenticado = await returnsOneUser(req.user.id);
+    let isRotaPermitida = await permissionOfAccessARoute(usuarioAutenticado, 'excluir_empresa');
     if(isRotaPermitida){
-        let isPermitidoManipularEmpresa = permissaoParaManipularUmaEmpresa(req.params.id, usuarioAutenticado);
+        let isPermitidoManipularEmpresa = permissionToManipulateACompany(req.params.id, usuarioAutenticado);
         if(isPermitidoManipularEmpresa){
             next();
         }else{
@@ -40,9 +40,9 @@ async function podeRemoverUmaEmpresa(req, res, next) {
     }
 }
 
-async function podeCriarUmUsuario(req, res, next) {
-    let usuarioAutenticado = await retornaUmUsuario(req.user.id);
-    let isRotaPermitida = await permissaoDeAcessoARota(usuarioAutenticado, 'criar_usuario');
+async function cancreateAUser(req, res, next) {
+    let usuarioAutenticado = await returnsOneUser(req.user.id);
+    let isRotaPermitida = await permissionOfAccessARoute(usuarioAutenticado, 'criar_usuario');
     if(isRotaPermitida){
         next();
     }else{
@@ -50,12 +50,12 @@ async function podeCriarUmUsuario(req, res, next) {
     }
 }
 
-async function podeEditarUmUsuario(req, res, next) {
-    let usuarioAutenticado = await retornaUmUsuario(req.user.id);
-    let usuarioASerManipulado = await retornaUmUsuario(req.params.id);
-    let isRotaPermitida = await permissaoDeAcessoARota(usuarioAutenticado, 'editar_usuario');
+async function canEditOneUser(req, res, next) {
+    let usuarioAutenticado = await returnsOneUser(req.user.id);
+    let usuarioASerManipulado = await returnsOneUser(req.params.id);
+    let isRotaPermitida = await permissionOfAccessARoute(usuarioAutenticado, 'editar_usuario');
     if(isRotaPermitida){
-        let isPermitidoManipularUsuario = permissaoParaManipularUmUsuario(usuarioAutenticado, usuarioASerManipulado);
+        let isPermitidoManipularUsuario = permissionToManipulateAUser(usuarioAutenticado, usuarioASerManipulado);
         if(isPermitidoManipularUsuario){
             next();
         }else{
@@ -66,12 +66,12 @@ async function podeEditarUmUsuario(req, res, next) {
     }
 }
 
-async function podeRemoverUmUsuario(req, res, next) {
-    let usuarioAutenticado = await retornaUmUsuario(req.user.id);
-    let usuarioASerManipulado = await retornaUmUsuario(req.params.id);
-    let isRotaPermitida = await permissaoDeAcessoARota(usuarioAutenticado, 'excluir_usuario');
+async function canRemoveAUser(req, res, next) {
+    let usuarioAutenticado = await returnsOneUser(req.user.id);
+    let usuarioASerManipulado = await returnsOneUser(req.params.id);
+    let isRotaPermitida = await permissionOfAccessARoute(usuarioAutenticado, 'excluir_usuario');
     if(isRotaPermitida){
-        let isPermitidoManipularUsuario = permissaoParaManipularUmUsuario(usuarioAutenticado, usuarioASerManipulado);
+        let isPermitidoManipularUsuario = permissionToManipulateAUser(usuarioAutenticado, usuarioASerManipulado);
         if(isPermitidoManipularUsuario){
             next();
         }else{
@@ -83,8 +83,8 @@ async function podeRemoverUmUsuario(req, res, next) {
 }
 
 async function canCreateAConfigurationOfAPlugin(req, res, next) {
-    let userAuthenticated = await retornaUmUsuario(req.user.id);
-    let isRotaPermitida = await permissaoDeAcessoARota(userAuthenticated, 'criar_plugin');
+    let userAuthenticated = await returnsOneUser(req.user.id);
+    let isRotaPermitida = await permissionOfAccessARoute(userAuthenticated, 'criar_plugin');
     if(isRotaPermitida){
         next();
     }else{
@@ -93,9 +93,9 @@ async function canCreateAConfigurationOfAPlugin(req, res, next) {
 }
 
 async function canEditAConfigurationOfAPlugin(req, res, next) {
-    let usuarioAutenticado = await retornaUmUsuario(req.user.id);
+    let usuarioAutenticado = await returnsOneUser(req.user.id);
     let configurationOfPluginThatWillBeManipulated = await returnPluginConfigurationAsManipulated(req.params.id);
-    let routeIsAllowed = await permissaoDeAcessoARota(usuarioAutenticado, 'editar_plugin');
+    let routeIsAllowed = await permissionOfAccessARoute(usuarioAutenticado, 'editar_plugin');
     if(routeIsAllowed){
         let manipulateConfigPluginIsAllowed = permissionToManipulateTheConfigurationOfAPlugin(usuarioAutenticado,  configurationOfPluginThatWillBeManipulated);
         if(manipulateConfigPluginIsAllowed){
@@ -109,9 +109,9 @@ async function canEditAConfigurationOfAPlugin(req, res, next) {
 }
 
 async function canRemoveAConfigurationOfAPlugin(req, res, next) {
-    let usuarioAutenticado = await retornaUmUsuario(req.user.id);
+    let usuarioAutenticado = await returnsOneUser(req.user.id);
     let configurationOfPluginThatWillBeManipulated = await returnPluginConfigurationAsManipulated(req.params.id);
-    let routeIsAllowed = await permissaoDeAcessoARota(usuarioAutenticado, 'excluir_plugin');
+    let routeIsAllowed = await permissionOfAccessARoute(usuarioAutenticado, 'excluir_plugin');
     if(routeIsAllowed){
         let manipulateConfigPluginIsAllowed = permissionToManipulateTheConfigurationOfAPlugin(usuarioAutenticado,  configurationOfPluginThatWillBeManipulated);
         if(manipulateConfigPluginIsAllowed){
@@ -124,12 +124,12 @@ async function canRemoveAConfigurationOfAPlugin(req, res, next) {
     }
 }
 
-async function permissaoDeAcessoARota(usuarioAutenticado, permissaoNecessaria) {
+async function permissionOfAccessARoute(usuarioAutenticado, permissaoNecessaria) {
     
     if(usuarioAutenticado){
 
-        let arrayPermissoesDoPapel = await retornaPermissoesDeUmpapel(usuarioAutenticado.papel.id);
-        let isRotaPermitida = papelTemPermissaoParaAcessarARota(permissaoNecessaria, arrayPermissoesDoPapel);
+        let arrayPermissoesDoPapel = await returnsPermissionsOfARole(usuarioAutenticado.papel.id);
+        let isRotaPermitida = roleHasPermissionToAccessARoute(permissaoNecessaria, arrayPermissoesDoPapel);
        
         if(isRotaPermitida){
             return true;
@@ -143,7 +143,7 @@ async function permissaoDeAcessoARota(usuarioAutenticado, permissaoNecessaria) {
 }
 
 // O usuário só pode manipular a sua própria empresa.
-function permissaoParaManipularUmaEmpresa(idEmpresaParams, usuarioAutenticado) {
+function permissionToManipulateACompany(idEmpresaParams, usuarioAutenticado) {
 
     if(usuarioAutenticado){
 
@@ -161,7 +161,7 @@ function permissaoParaManipularUmaEmpresa(idEmpresaParams, usuarioAutenticado) {
 }
 
 // O usuário só pode manipular um usuário que pertence a sua própria empresa.
-function permissaoParaManipularUmUsuario(usuarioAutenticado, usuarioQueSeraManipulado) {
+function permissionToManipulateAUser(usuarioAutenticado, usuarioQueSeraManipulado) {
     
     if(usuarioAutenticado && usuarioQueSeraManipulado){
 
@@ -196,12 +196,12 @@ function permissionToManipulateTheConfigurationOfAPlugin(userAuthenticated, conf
     }
 }
 
-function papelTemPermissaoParaAcessarARota (permissaoNecessariaParaAcessarARotaParaAcessarARota, arrayPermissoesDoPapel){
+function roleHasPermissionToAccessARoute (permissaoNecessariaParaAcessarARotaParaAcessarARota, arrayPermissoesDoPapel){
     return arrayPermissoesDoPapel.includes(permissaoNecessariaParaAcessarARotaParaAcessarARota);
 }
 
 
-const retornaUmUsuario = async (idUsuario)=>{
+const returnsOneUser = async (idUsuario)=>{
     try{
         return await User.findByPk(idUsuario, {include: [{ model: Role, as: 'papel' }, {model: Company, as: 'empresa'}]});
     }catch(e){
@@ -210,7 +210,7 @@ const retornaUmUsuario = async (idUsuario)=>{
     }
 }
 
-const retornaPermissoesDeUmpapel = async (idPapel)=>{
+const returnsPermissionsOfARole = async (idPapel)=>{
     try{
         let buscaPemissoes = await Role.findByPk(idPapel, {include: Permission});
         if(buscaPemissoes){
@@ -237,9 +237,9 @@ const returnPluginConfigurationAsManipulated = async (configPluginId) => {
     }
 }
 
-export {podeCriarUmaEmpresa, podeEditarUmaEmpresa, podeRemoverUmaEmpresa,
-    podeCriarUmUsuario, podeEditarUmUsuario, podeRemoverUmUsuario, 
+export {canCreateACompany, canEditOneCompany, canRemoveACompany,
+    cancreateAUser, canEditOneUser, canRemoveAUser, 
     canCreateAConfigurationOfAPlugin, canEditAConfigurationOfAPlugin, canRemoveAConfigurationOfAPlugin,
-    permissaoParaManipularUmaEmpresa, permissaoParaManipularUmUsuario,
-    papelTemPermissaoParaAcessarARota, permissionToManipulateTheConfigurationOfAPlugin
+    permissionToManipulateACompany, permissionToManipulateAUser,
+    roleHasPermissionToAccessARoute, permissionToManipulateTheConfigurationOfAPlugin
 };

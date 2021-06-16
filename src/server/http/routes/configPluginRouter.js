@@ -1,6 +1,6 @@
 import express from 'express'
 import * as configPluginsController from '../../../controllers/configPluginsController.js'
-import { canCreateAConfigurationOfAPlugin, canEditAConfigurationOfAPlugin, canRemoveAConfigurationOfAPlugin } from '../../../controllers/validacaoController.js';
+import { canCreateAConfigurationOfAPlugin, canEditAConfigurationOfAPlugin, canRemoveAConfigurationOfAPlugin } from '../../../controllers/validationController.js';
 
 const router = express.Router();
 
