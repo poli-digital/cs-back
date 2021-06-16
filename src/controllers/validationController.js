@@ -6,7 +6,7 @@ async function canCreateACompany(req, res, next) {
     if(isRouteAllowed){
         next();
     }else{
-        res.status(401).json({message:`Você não tem permissão para acessar esta rota com o papel de ${userAuthenticated?.role?.name}!`});
+        res.status(401).json({message:`You are not allowed to access this route with the role of ${userAuthenticated?.role?.name}!`});
     }
 }
 
@@ -18,10 +18,10 @@ async function canEditOneCompany(req, res, next) {
         if(isPermitidoManipularEmpresa){
             next();
         }else{
-            res.status(401).json({message:'Você só pode editar as suas empresas!'});
+            res.status(401).json({message:'You can only edit your companies!'});
         }
     }else{
-        res.status(401).json({message:`Você não tem permissão para acessar esta rota com o papel de ${userAuthenticated?.role?.name}!`});
+        res.status(401).json({message:`You are not allowed to access this route with the role of ${userAuthenticated?.role?.name}!`});
     }
 }
 
@@ -33,10 +33,10 @@ async function canRemoveACompany(req, res, next) {
         if(isPermitidoManipularEmpresa){
             next();
         }else{
-            res.status(401).json({message:'Você só pode remover as suas empresas!'});
+            res.status(401).json({message:'You can only remove your companies!'});
         }
     }else{
-        res.status(401).json({message:`Você não tem permissão para acessar esta rota com o papel de ${userAuthenticated?.role?.name}!`});
+        res.status(401).json({message:`You are not allowed to access this route with the role of ${userAuthenticated?.role?.name}!`});
     }
 }
 
@@ -46,7 +46,7 @@ async function cancreateAUser(req, res, next) {
     if(isRouteAllowed){
         next();
     }else{
-        res.status(401).json({message:`Você não tem permissão para acessar esta rota com o papel de ${userAuthenticated?.role?.name}!`});
+        res.status(401).json({message:`You are not allowed to access this route with the role of ${userAuthenticated?.role?.name}!`});
     }
 }
 
@@ -55,14 +55,18 @@ async function canEditOneUser(req, res, next) {
     let userToBeManipulated = await returnsOneUser(req.params.id);
     let isRouteAllowed = await permissionOfAccessARoute(userAuthenticated, 'editar_usuario');
     if(isRouteAllowed){
-        let isPermitidoManipularUsuario = permissionToManipulateAUser(userAuthenticated, userToBeManipulated);
-        if(isPermitidoManipularUsuario){
-            next();
+        if(userToBeManipulated){
+            let isPermitidoManipularUsuario = permissionToManipulateAUser(userAuthenticated, userToBeManipulated);
+            if(isPermitidoManipularUsuario){
+                next();
+            }else{
+                res.status(401).json({message:'You can only edit your users!'});
+            }
         }else{
-            res.status(401).json({message:'Você só pode editar os seus usuários!'});
+            res.status(401).json({message:'User not found!'});
         }
     }else{
-        res.status(401).json({message:`Você não tem permissão para acessar esta rota com o papel de ${userAuthenticated?.role?.name}!`});
+        res.status(401).json({message:`You are not allowed to access this route with the role of ${userAuthenticated?.role?.name}!`});
     }
 }
 
@@ -71,14 +75,18 @@ async function canRemoveAUser(req, res, next) {
     let userToBeManipulated = await returnsOneUser(req.params.id);
     let isRouteAllowed = await permissionOfAccessARoute(userAuthenticated, 'excluir_usuario');
     if(isRouteAllowed){
-        let isPermitidoManipularUsuario = permissionToManipulateAUser(userAuthenticated, userToBeManipulated);
-        if(isPermitidoManipularUsuario){
-            next();
+        if(userToBeManipulated){
+            let isPermitidoManipularUsuario = permissionToManipulateAUser(userAuthenticated, userToBeManipulated);
+            if(isPermitidoManipularUsuario){
+                next();
+            }else{
+                res.status(401).json({message:'You can only remove your users!'});
+            }
         }else{
-            res.status(401).json({message:'Você só pode remover os seus usuários!'});
+            res.status(401).json({message:'User not found!'});
         }
     }else{
-        res.status(401).json({message:`Você não tem permissão para acessar esta rota com o papel de ${userAuthenticated?.role?.name}!`});
+        res.status(401).json({message:`You are not allowed to access this route with the role of ${userAuthenticated?.role?.name}!`});
     }
 }
 
@@ -88,7 +96,7 @@ async function canCreateAConfigurationOfAPlugin(req, res, next) {
     if(isRouteAllowed){
         next();
     }else{
-        res.status(401).json({message:`Você não tem permissão para acessar esta rota com o papel de ${userAuthenticated?.role?.name}!`});
+        res.status(401).json({message:`You are not allowed to access this route with the role of ${userAuthenticated?.role?.name}!`});
     }
 }
 
@@ -97,11 +105,15 @@ async function canEditAConfigurationOfAPlugin(req, res, next) {
     let configurationOfPluginThatWillBeManipulated = await returnPluginConfigurationAsManipulated(req.params.id);
     let routeIsAllowed = await permissionOfAccessARoute(userAuthenticated, 'editar_plugin');
     if(routeIsAllowed){
-        let manipulateConfigPluginIsAllowed = permissionToManipulateTheConfigurationOfAPlugin(userAuthenticated,  configurationOfPluginThatWillBeManipulated);
-        if(manipulateConfigPluginIsAllowed){
-            next();
+        if(configurationOfPluginThatWillBeManipulated){
+            let manipulateConfigPluginIsAllowed = permissionToManipulateTheConfigurationOfAPlugin(userAuthenticated,  configurationOfPluginThatWillBeManipulated);
+            if(manipulateConfigPluginIsAllowed){
+                next();
+            }else{
+                res.status(401).json({message:'You can only edit your plugins!'});
+            }
         }else{
-            res.status(401).json({message:'You can only edit your plugins!'});
+            res.status(401).json({message:'Config plugin not found!'});
         }
     }else{
         res.status(401).json({message:`You are not allowed to access this route with the role of ${userAuthenticated?.role?.name}!`});
@@ -113,12 +125,16 @@ async function canRemoveAConfigurationOfAPlugin(req, res, next) {
     let configurationOfPluginThatWillBeManipulated = await returnPluginConfigurationAsManipulated(req.params.id);
     let routeIsAllowed = await permissionOfAccessARoute(userAuthenticated, 'excluir_plugin');
     if(routeIsAllowed){
-        let manipulateConfigPluginIsAllowed = permissionToManipulateTheConfigurationOfAPlugin(userAuthenticated,  configurationOfPluginThatWillBeManipulated);
-        if(manipulateConfigPluginIsAllowed){
-            next();
+        if(configurationOfPluginThatWillBeManipulated){
+            let manipulateConfigPluginIsAllowed = permissionToManipulateTheConfigurationOfAPlugin(userAuthenticated,  configurationOfPluginThatWillBeManipulated);
+            if(manipulateConfigPluginIsAllowed){
+                next();
+            }else{
+                res.status(401).json({message:'You can only edit your plugins!'});
+            }
         }else{
-            res.status(401).json({message:'You can only edit your plugins!'});
-        }
+            res.status(401).json({message:'Config plugin not found!'});
+        } 
     }else{
         res.status(401).json({message:`You are not allowed to access this route with the role of ${userAuthenticated?.role?.name}!`});
     }
@@ -205,7 +221,7 @@ const returnsOneUser = async (idUser)=>{
     try{
         return await User.findByPk(idUser, {include: [{ model: Role, as: 'role' }, {model: Company, as: 'company'}]});
     }catch(e){
-        console.log('Erro ao retornar usuário', e);
+        console.log('Error returning user', e);
         return null;
     }
 }
@@ -223,7 +239,7 @@ const returnsPermissionsOfARole = async (idRole)=>{
             return [];
         }
     }catch(e){
-        console.log('Erro ao retornar permissões', e);
+        console.log('Error returning permissions', e);
         return [];
     }
 }

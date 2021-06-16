@@ -3,7 +3,7 @@ import {Company} from '../models/index.js'
 async function insertOne(req, res, next) {
     try {
         const company = {
-            nome: req.body.name,
+            name: req.body.name,
             cnpj: req.body.cnpj,
         };
 
@@ -70,7 +70,7 @@ async function updateOne(req, res, next) {
     const company_id = req.params.id;
 
     const newCompany = {
-        nome: req.body.name,
+        name: req.body.name,
         cnpj: req.body.cnpj,
     };
 
