@@ -24,7 +24,7 @@ async function findAll(req, res, next) {
         if (company.length > 0) {
             res.status(200).json(company);
         } else {
-            res.status(404).json({ message: "Company not found!" });
+            res.status(404).json({ message: "Companies not found!" });
         }
     } catch (e) {
         next(e);

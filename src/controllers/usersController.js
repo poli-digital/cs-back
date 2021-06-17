@@ -4,7 +4,7 @@ import bcrypt from 'bcryptjs'
 async function insertOne(req, res, next) {
     try {
         const user = {
-            name: req.body.nome,
+            name: req.body.name,
             email: req.body.email,
             password: bcrypt.hashSync(req.body.password),
             blocked: false,
@@ -29,7 +29,7 @@ async function findAll(req, res, next) {
         if (user.length > 0) {
             res.status(200).json(user);
         } else {
-            res.status(404).json({ message: "User not found!" });
+            res.status(404).json({ message: "Users not found!" });
         }
     } catch (e) {
         next(e);
@@ -75,12 +75,17 @@ async function updateOne(req, res, next) {
     const user_id = req.params.id;
 
     const newUser = {
-        name: req.body.nome,
+        name: req.body.name,
         email: req.body.email,
-        blocked: req.body.bloqueado,
+        blocked: req.body.blocked,
         role_id: req.body.role_id,
         company_id: req.body.company_id
     };
+
+    //Object.assign(obj, {key3: "value3"});
+    if(req.body.password != undefined){
+        newUser.password = bcrypt.hashSync(req.body.password);
+    }
 
     try {
         let result = await User.update(newUser, { where: { id: user_id }, include: [{ model: Role, as: 'role' }] });

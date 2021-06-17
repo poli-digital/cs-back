@@ -58,7 +58,7 @@ async function findOne(req, res, next) {
         if (configPlugin) {
             res.status(200).json(configPlugin);
         } else {
-            res.status(404).json({ message: "No Plugins settings found!" });
+            res.status(404).json({ message: "No Plugin setting found!" });
         }
     } catch (e) {
         next(e);
@@ -98,7 +98,7 @@ async function updateOne(req, res, next) {
             newConfigPlugin.id = configPlugin_id;
             res.status(200).json(newConfigPlugin);
         } else {
-            res.status(404).json({ message: "No Plugins settings found!" });
+            res.status(404).json({ message: "No Plugin setting found!" });
         }
     } catch (e) {
         next(e);
@@ -114,7 +114,7 @@ async function destroyOne(req, res, next) {
         if (result > 0) {
             res.status(200).json({ message: "The plugin configuration has been removed!" });
         } else {
-            res.status(404).json({ message: "No Plugins settings found!" });
+            res.status(404).json({ message: "No Plugin setting found!" });
         }
     } catch (e) {
         next(e);
