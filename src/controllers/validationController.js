@@ -1,140 +1,89 @@
 import {Role, Permission, User, Company, ConfigPlugins} from "../models/index.js";
 
-async function canCreateACompany(req, res, next) {
-    let userAuthenticated = await returnsOneUser(req.user.id);
-    let isRouteAllowed = await permissionOfAccessARoute(userAuthenticated, 'criar_empresa');
-    if(isRouteAllowed){
+async function canAccessRouteToCreateACompany(req, res, next) {
+    canAccessRoute(req, res, next, 'criar_empresa', false)
+}
+
+async function canAccessRouteToEditACompany(req, res, next) {
+    canAccessRoute(req, res, next, 'editar_empresa', true)
+}
+
+async function canAccessRouteToRemoveACompany(req, res, next) {
+    canAccessRoute(req, res, next, 'excluir_empresa', true)
+}
+
+async function canAccessRouteToCreateAUser(req, res, next) {
+    canAccessRoute(req, res, next, 'criar_usuario', false)
+}
+
+async function canAccessRouteToEditAUser(req, res, next) {
+    canAccessRoute(req, res, next, 'editar_usuario', true)
+}
+
+async function canAccessRouteToRemoveAUser(req, res, next) {
+    canAccessRoute(req, res, next, 'excluir_usuario', true)
+}
+
+async function canAccessRouteToCreateAConfigPlugin(req, res, next) {
+    canAccessRoute(req, res, next, 'criar_plugin', false)
+}
+
+async function canAccessRouteToEditAConfigPlugin(req, res, next) {
+    canAccessRoute(req, res, next, 'editar_plugin', true)
+}
+
+async function canAccessRouteToRemoveAConfigPlugin(req, res, next) {
+    canAccessRoute(req, res, next, 'excluir_plugin', true)
+}
+
+async function validateCompanyManipulation(userAuthenticated, req, res, next) {
+    let isPermitidoManipularEmpresa = permissionToManipulateACompany(req.params.id, userAuthenticated);
+    if(isPermitidoManipularEmpresa){
         next();
     }else{
-        res.status(401).json({message:`You are not allowed to access this route with the role of ${userAuthenticated?.role?.name}!`});
+        res.status(401).json({message:'You can only manipulate (edit or remove) your own company!'});
     }
 }
 
-async function canEditOneCompany(req, res, next) {
-    let userAuthenticated = await returnsOneUser(req.user.id);
-    let isRouteAllowed = await permissionOfAccessARoute(userAuthenticated, 'editar_empresa');
-    if(isRouteAllowed){
-        let isPermitidoManipularEmpresa = permissionToManipulateACompany(req.params.id, userAuthenticated);
-        if(isPermitidoManipularEmpresa){
+async function validateUserManipulation(userAuthenticated, req, res, next) {
+    //let userAuthenticated = await returnsOneUser(req.user.id);
+    let userToBeManipulated = await returnsOneUser(req.params.id);
+    if(userToBeManipulated){
+        let isPermitidoManipularUsuario = permissionToManipulateAUser(userAuthenticated, userToBeManipulated);
+        if(isPermitidoManipularUsuario){
             next();
         }else{
-            res.status(401).json({message:'You can only edit your companies!'});
+            res.status(401).json({message:'You can only manipulate (add, edit or remove) users in your own company'});
         }
     }else{
-        res.status(401).json({message:`You are not allowed to access this route with the role of ${userAuthenticated?.role?.name}!`});
+        res.status(401).json({message:'User not found!'});
     }
 }
 
-async function canRemoveACompany(req, res, next) {
-    let userAuthenticated = await returnsOneUser(req.user.id);
-    let isRouteAllowed = await permissionOfAccessARoute(userAuthenticated, 'excluir_empresa');
-    if(isRouteAllowed){
-        let isPermitidoManipularEmpresa = permissionToManipulateACompany(req.params.id, userAuthenticated);
-        if(isPermitidoManipularEmpresa){
+async function validateConfigPluginManipulation(userAuthenticated, req, res, next) {
+    //let userAuthenticated = await returnsOneUser(req.user.id);
+    let configurationOfPluginThatWillBeManipulated = await returnPluginConfigurationAsManipulated(req.params.id);
+    if(configurationOfPluginThatWillBeManipulated){
+        let manipulateConfigPluginIsAllowed = permissionToManipulateTheConfigurationOfAPlugin(userAuthenticated,  configurationOfPluginThatWillBeManipulated);
+        if(manipulateConfigPluginIsAllowed){
             next();
         }else{
-            res.status(401).json({message:'You can only remove your companies!'});
+            res.status(401).json({message:'You can only manipulate (add, edit or remove) Config Plugin in your own company'});
         }
     }else{
-        res.status(401).json({message:`You are not allowed to access this route with the role of ${userAuthenticated?.role?.name}!`});
+        res.status(401).json({message:'Config plugin not found!'});
     }
 }
 
-async function cancreateAUser(req, res, next) {
+async function canAccessRoute(req, res, next, permissionToAccessRoute, goNextWithUserAuthenticated) {
     let userAuthenticated = await returnsOneUser(req.user.id);
-    let isRouteAllowed = await permissionOfAccessARoute(userAuthenticated, 'criar_usuario');
+    let isRouteAllowed = await permissionOfAccessARoute(userAuthenticated, permissionToAccessRoute);
     if(isRouteAllowed){
-        next();
-    }else{
-        res.status(401).json({message:`You are not allowed to access this route with the role of ${userAuthenticated?.role?.name}!`});
-    }
-}
-
-async function canEditOneUser(req, res, next) {
-    let userAuthenticated = await returnsOneUser(req.user.id);
-    let userToBeManipulated = await returnsOneUser(req.params.id);
-    let isRouteAllowed = await permissionOfAccessARoute(userAuthenticated, 'editar_usuario');
-    if(isRouteAllowed){
-        if(userToBeManipulated){
-            let isPermitidoManipularUsuario = permissionToManipulateAUser(userAuthenticated, userToBeManipulated);
-            if(isPermitidoManipularUsuario){
-                next();
-            }else{
-                res.status(401).json({message:'You can only edit your users!'});
-            }
+        if(goNextWithUserAuthenticated){
+            next(userAuthenticated);  
         }else{
-            res.status(401).json({message:'User not found!'});
+            next();
         }
-    }else{
-        res.status(401).json({message:`You are not allowed to access this route with the role of ${userAuthenticated?.role?.name}!`});
-    }
-}
-
-async function canRemoveAUser(req, res, next) {
-    let userAuthenticated = await returnsOneUser(req.user.id);
-    let userToBeManipulated = await returnsOneUser(req.params.id);
-    let isRouteAllowed = await permissionOfAccessARoute(userAuthenticated, 'excluir_usuario');
-    if(isRouteAllowed){
-        if(userToBeManipulated){
-            let isPermitidoManipularUsuario = permissionToManipulateAUser(userAuthenticated, userToBeManipulated);
-            if(isPermitidoManipularUsuario){
-                next();
-            }else{
-                res.status(401).json({message:'You can only remove your users!'});
-            }
-        }else{
-            res.status(401).json({message:'User not found!'});
-        }
-    }else{
-        res.status(401).json({message:`You are not allowed to access this route with the role of ${userAuthenticated?.role?.name}!`});
-    }
-}
-
-async function canCreateAConfigurationOfAPlugin(req, res, next) {
-    let userAuthenticated = await returnsOneUser(req.user.id);
-    let isRouteAllowed = await permissionOfAccessARoute(userAuthenticated, 'criar_plugin');
-    if(isRouteAllowed){
-        next();
-    }else{
-        res.status(401).json({message:`You are not allowed to access this route with the role of ${userAuthenticated?.role?.name}!`});
-    }
-}
-
-async function canEditAConfigurationOfAPlugin(req, res, next) {
-    let userAuthenticated = await returnsOneUser(req.user.id);
-    let configurationOfPluginThatWillBeManipulated = await returnPluginConfigurationAsManipulated(req.params.id);
-    let routeIsAllowed = await permissionOfAccessARoute(userAuthenticated, 'editar_plugin');
-    if(routeIsAllowed){
-        if(configurationOfPluginThatWillBeManipulated){
-            let manipulateConfigPluginIsAllowed = permissionToManipulateTheConfigurationOfAPlugin(userAuthenticated,  configurationOfPluginThatWillBeManipulated);
-            if(manipulateConfigPluginIsAllowed){
-                next();
-            }else{
-                res.status(401).json({message:'You can only edit your plugins!'});
-            }
-        }else{
-            res.status(401).json({message:'Config plugin not found!'});
-        }
-    }else{
-        res.status(401).json({message:`You are not allowed to access this route with the role of ${userAuthenticated?.role?.name}!`});
-    }
-}
-
-async function canRemoveAConfigurationOfAPlugin(req, res, next) {
-    let userAuthenticated = await returnsOneUser(req.user.id);
-    let configurationOfPluginThatWillBeManipulated = await returnPluginConfigurationAsManipulated(req.params.id);
-    let routeIsAllowed = await permissionOfAccessARoute(userAuthenticated, 'excluir_plugin');
-    if(routeIsAllowed){
-        if(configurationOfPluginThatWillBeManipulated){
-            let manipulateConfigPluginIsAllowed = permissionToManipulateTheConfigurationOfAPlugin(userAuthenticated,  configurationOfPluginThatWillBeManipulated);
-            if(manipulateConfigPluginIsAllowed){
-                next();
-            }else{
-                res.status(401).json({message:'You can only edit your plugins!'});
-            }
-        }else{
-            res.status(401).json({message:'Config plugin not found!'});
-        } 
     }else{
         res.status(401).json({message:`You are not allowed to access this route with the role of ${userAuthenticated?.role?.name}!`});
     }
@@ -216,7 +165,6 @@ function roleHasPermissionToAccessARoute (permissionNeededToAccessARouteToAccess
     return arrayRolesPermissions.includes(permissionNeededToAccessARouteToAccessARoute);
 }
 
-
 const returnsOneUser = async (idUser)=>{
     try{
         return await User.findByPk(idUser, {include: [{ model: Role, as: 'role' }, {model: Company, as: 'company'}]});
@@ -253,9 +201,11 @@ const returnPluginConfigurationAsManipulated = async (idConfigPlugin) => {
     }
 }
 
-export {canCreateACompany, canEditOneCompany, canRemoveACompany,
-    cancreateAUser, canEditOneUser, canRemoveAUser, 
-    canCreateAConfigurationOfAPlugin, canEditAConfigurationOfAPlugin, canRemoveAConfigurationOfAPlugin,
+export {
     permissionToManipulateACompany, permissionToManipulateAUser,
-    roleHasPermissionToAccessARoute, permissionToManipulateTheConfigurationOfAPlugin
+    roleHasPermissionToAccessARoute, permissionToManipulateTheConfigurationOfAPlugin,
+    canAccessRouteToCreateACompany, canAccessRouteToEditACompany, canAccessRouteToRemoveACompany,
+    canAccessRouteToCreateAUser, canAccessRouteToEditAUser, canAccessRouteToRemoveAUser,
+    canAccessRouteToCreateAConfigPlugin, canAccessRouteToEditAConfigPlugin, canAccessRouteToRemoveAConfigPlugin,
+    validateCompanyManipulation, validateUserManipulation, validateConfigPluginManipulation
 };
