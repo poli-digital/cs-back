@@ -3,8 +3,8 @@ import * as configInstallController from '../../../controllers/configInstallCont
 
 const router = express.Router();
 
-router.get('/', (req, res, next)=>{
-    configInstallController.firstConfig(req, res, next);
+router.post('/firstConfigMariaDb', (req, res, next)=>{
+    configInstallController.firstConfigMariaDb(req, res, next);
 });
 
 export default router;
