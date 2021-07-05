@@ -1,7 +1,7 @@
 import Sequelize from 'sequelize'
-import config from '../../config/config.js'
 
-// Option 1: Passing parameters separately
+const config = process.env;
+
 const database = new Sequelize(
   config.DB_DATABASE,
   config.DB_USERNAME,
