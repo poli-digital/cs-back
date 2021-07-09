@@ -12,12 +12,12 @@ async function login(req, res, next) {
         let user = await User.findOne({ where: { email: emailInformed } });
         
         if(!user){
-            res.status(404).json({ message: "Invalid email or incorrect password!" });
+            res.status(401).json({ message: "Invalid email or incorrect password!" });
         }else{
             
             let passwordExistsInBank = bcrypt.compareSync(passwordInformed, user.password);
             if(!passwordExistsInBank){
-                res.status(404).json({ message: "Invalid email or incorrect password!" });
+                res.status(401).json({ message: "Invalid email or incorrect password!" });
             }else{
 
                 let tokenContent = {
@@ -27,7 +27,7 @@ async function login(req, res, next) {
                 //let token = jwt.sign({ user: conteudoDoToken}, config.TOKEN_SECRET, { expiresIn: '4h' });
                 let token = jwt.sign({ user: tokenContent}, process.env.TOKEN_SECRET);
                 res.header('token', token);
-                res.status(200).json({ message: "Successfully logged in!"});
+                res.status(200).json({ message: "Successfully logged in!", token:token});
             }
         }
 
