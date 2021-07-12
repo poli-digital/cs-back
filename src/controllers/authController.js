@@ -21,13 +21,15 @@ async function login(req, res, next) {
             }else{
 
                 let tokenContent = {
-                    id: user.id
+                    id: user.id,
+                    name: user.name,
+                    email: user.email
                 }
 
                 //let token = jwt.sign({ user: conteudoDoToken}, config.TOKEN_SECRET, { expiresIn: '4h' });
                 let token = jwt.sign({ user: tokenContent}, process.env.TOKEN_SECRET);
                 res.header('token', token);
-                res.status(200).json({ message: "Successfully logged in!", token:token});
+                res.status(200).json({ message: "Successfully logged in!", token:token, user:tokenContent});
             }
         }
 
