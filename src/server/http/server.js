@@ -9,6 +9,7 @@ import cors from 'cors'
 import swaggerUi from 'swagger-ui-express'
 import swaggerDocument from '../../../docs/openApi/documentation.js'
 import configInstallRouter from './routes/configInstallRouter.js'
+import roleRouter from './routes/roleRouter.js';
 
 const app = express();
 app.use(express.json());
@@ -23,6 +24,7 @@ app.use("/companies", isAuth, companyRouter);
 app.use("/users", isAuth, userRouter);
 app.use("/plugins", pluginRouter);
 app.use('/configPlugins', isAuth, configPluginsRouter);
+app.use('/roles', isAuth, roleRouter);
 
 app.use((err, req, res, next) => {
     console.log('Algo deu errado nesta requisição! Bad Request ', err)
