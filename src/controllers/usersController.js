@@ -7,7 +7,7 @@ async function insertOne(req, res, next) {
             name: req.body.name,
             email: req.body.email,
             password: bcrypt.hashSync(req.body.password),
-            blocked: false,
+            blocked: req.body.blocked,
             role_id: req.body.role_id,
             company_id: req.body.company_id
         };
