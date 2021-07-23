@@ -65,6 +65,25 @@ async function findOne(req, res, next) {
     }
 }
 
+async function findOneByPluginAndCompany(req, res, next) {
+    
+    const idPlugin = req.params.idPlugin;
+    const idCompany = req.params.idCompany;
+
+    try {
+        let configPlugin = await ConfigPlugins.findOne({where: {plugin_id:idPlugin, company_id: idCompany  }, include: [{ model: Company, as: 'config_plugins_company' }, {model: Plugin, as: 'config_plugins_plugin'}]});
+        //let configPlugin = await ConfigPlugins.findByPk(configPlugin_id, {include: [{ model: Company, as: 'config_plugins_company' }, {model: Plugin, as: 'config_plugins_plugin'}]});
+
+        if (configPlugin) {
+            res.status(200).json(configPlugin);
+        } else {
+            res.status(404).json({ message: "No Plugin setting found!" });
+        }
+    } catch (e) {
+        next(e);
+    }
+}
+
 async function updateOne(req, res, next) {
     const configPlugin_id = req.params.id;
 
@@ -121,4 +140,4 @@ async function destroyOne(req, res, next) {
     }
 }
 
-export {findAll, insertOne, findOne, updateOne, destroyOne}
+export {findAll, insertOne, findOne, updateOne, destroyOne, findOneByPluginAndCompany}

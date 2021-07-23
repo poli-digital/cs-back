@@ -26,7 +26,9 @@ async function login(req, res, next) {
                     let tokenContent = {
                         id: user.id,
                         name: user.name,
-                        email: user.email
+                        email: user.email,
+                        role_id:user.role_id,
+                        company_id:user.company_id
                     }
     
                     //let token = jwt.sign({ user: conteudoDoToken}, config.TOKEN_SECRET, { expiresIn: '4h' });

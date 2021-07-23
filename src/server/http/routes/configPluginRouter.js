@@ -18,6 +18,11 @@ router.get('/:id', (req, res, next)=>{
     configPluginsController.findOne(req, res, next);
 });
 
+//Obtem uma configuração de plugin especifica baseado na empersa e no plugin
+router.get('/company/:idCompany/plugin/:idPlugin', (req, res, next)=>{
+    configPluginsController.findOneByPluginAndCompany(req, res, next);
+});
+
 //Insere uma nova configuração de plugin
 router.post('/', canAccessRouteToCreateAConfigPlugin, (req, res, next)=>{
     configPluginsController.insertOne(req, res, next);

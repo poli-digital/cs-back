@@ -7,4 +7,8 @@ router.get('/', (req, res, next)=>{
     pluginsController.findAll(req, res, next);
 });
 
+router.get('/:name', (req, res, next)=>{
+    pluginsController.findOneByName(req, res, next);
+});
+
 export default router;
